@@ -11,7 +11,7 @@
 
 typedef struct {
     // 转子转速
-    int16_t rotorSpeed[4];
+    int16_t rotorSpeed[8];
     float   vx;
     float   vy;
     float   vw;

@@ -23,7 +23,7 @@
     CanTxData.Data[5] = (uint8_t) i_203;
     CanTxData.Data[6] = (uint8_t)(i_204 >> 8);
     CanTxData.Data[7] = (uint8_t) i_204;
-
+	
     // do {
     //     if (CANx->ESR) {
     //         // 可以在这里输出ESR来查看CAN错误

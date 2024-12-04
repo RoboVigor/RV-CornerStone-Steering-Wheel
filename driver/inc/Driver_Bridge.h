@@ -12,6 +12,7 @@
 #include "Driver_CAN.h"
 #include "Driver_Bridge.h"
 #include "Driver_BSP.h"
+#include "Driver_Encoder.h"
 #include "config.h"
 
 typedef enum { CAN1_BRIDGE = 0, CAN2_BRIDGE, USART_BRIDGE } bridge_type_e;
@@ -22,6 +23,7 @@ typedef enum { CAN1_BRIDGE = 0, CAN2_BRIDGE, USART_BRIDGE } bridge_type_e;
  */
 typedef struct {
     Motor_Type *motors[24];    // [0-11] CAN1, [12-23] CAN2
+    Encoder_Type *encoders[12];
     Node_Type * canNodes[10];  // [0-4] CAN1 [0x500-0x504], [5-9] CAN2 [0x500-0x504]
     Node_Type * usartNodes[4]; // [0-4] USART [3,6,7,8]
 } Bridge_Type;
@@ -48,9 +50,11 @@ static usart_t USART[] = {{},
 #define USARTx_Rx (USART[deviceID].Rx)
 
 #define IS_MOTOR (deviceID <= 0x2FF && deviceID >= 0x1FF)
+#define IS_ENCODER (deviceID < 0x100)
 #define IS_CAN (type != USART_BRIDGE)
 
 #define MOTOR (bridge->motors[deviceID - 0x201 + (type == CAN2_BRIDGE ? 12 : 0)])
+#define ENCODER (bridge->encoders[deviceID + (type == CAN2_BRIDGE ? 6 : 0)])
 #define CAN_NODE (bridge->canNodes[deviceID - 0x500 + (type == CAN2_BRIDGE ? 5 : 0)])
 #define USART_NODE (bridge->usartNodes[USART[deviceID].bridge_index])
 

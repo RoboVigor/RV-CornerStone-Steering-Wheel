@@ -162,9 +162,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>18</LineNumber>
+          <LineNumber>56</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134251824</Address>
+          <Address>134244812</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -173,7 +173,7 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>D:\RoboVigor\鑸佃疆\鑸佃疆浠ｇ爜\user\infantry\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Belief_exp2\../user/infantry/main.c\18</Expression>
+          <Expression>\\Belief_exp2\../user/infantry/main.c\56</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

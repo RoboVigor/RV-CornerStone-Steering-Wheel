@@ -4,7 +4,10 @@
 void Bridge_Bind(Bridge_Type *bridge, uint8_t type, uint32_t deviceID, void *handle) {
     if (IS_MOTOR) {
         MOTOR = handle;
-    } else {
+    } 
+    else if(IS_ENCODER)
+        ENCODER=handle;
+    else {
         Node_Type *node = handle;
         if (IS_CAN) {
             CAN_NODE = node;
@@ -54,7 +57,12 @@ void Bridge_Receive_CAN(Bridge_Type *bridge, uint8_t type) {
     if (IS_MOTOR) {
         Motor_Type *motor = MOTOR;
         Motor_Update(motor, CanRxData.Data);
-    } else {
+    } 
+    else if(IS_ENCODER){
+        Encoder_Type *encoder = ENCODER;
+        Encoder_Update(encoder, CanRxData.Data);
+    }
+    else {
         for (i = 0; i < CanRxData.DLC; i++) {
             node              = CAN_NODE;
             node->isFirstByte = i == 0 ? 1 : 0;
