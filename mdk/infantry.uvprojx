@@ -549,6 +549,11 @@
               <FileType>1</FileType>
               <FilePath>..\driver\src\Driver_Bridge.c</FilePath>
             </File>
+            <File>
+              <FileName>Driver_Encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driver\src\Driver_Encoder.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

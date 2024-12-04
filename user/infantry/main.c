@@ -114,7 +114,7 @@ int main(void) {
 
     // 运动控制任务
     xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
-    xTaskCreate(Task_Gimbal, "Task_Gimbal", 500, NULL, 5, NULL);
+    //xTaskCreate(Task_Gimbal, "Task_Gimbal", 500, NULL, 5, NULL);
     xTaskCreate(Task_Fire_Stir, "Task_Fire_Stir", 400, NULL, 6, NULL);
     xTaskCreate(Task_Fire_Frict, "Task_Fire_Frict", 400, NULL, 6, NULL);
 	xTaskCreate(Task_Wait,"Task_Wait",400,NULL,5,NULL);
@@ -122,7 +122,7 @@ int main(void) {
 	xTaskCreate(Task_Wait,"Task_Wait",400,NULL,5,NULL);
 	
     // DMA发送任务
-    xTaskCreate(Task_Startup_Music, "Task_Startup_Music", 500, NULL, 6, NULL);
+    //xTaskCreate(Task_Startup_Music, "Task_Startup_Music", 500, NULL, 6, NULL);
 
     // 定义协议发送频率
     Bridge_Send_Protocol(&Node_Host, 0x120, 1);  // 心跳包

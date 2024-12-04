@@ -436,8 +436,9 @@ void Task_Chassis(void *Parameters) {
         targetPower = 100.0 * (1 - WANG(60.0 - ChassisData.powerBuffer, 0.0, 40.0) / 40.0); // 设置目标功率 ?
 
         Chassis_Update(&ChassisData, vx, vy, vwRamp); // 更新麦轮转速
-        Chassis_Fix(&ChassisData, motorAngle);        // 修正旋转后底盘的前进方向
+        //Chassis_Fix(&ChassisData, motorAngle);        // 修正旋转后底盘的前进方向
         Chassis_Calculate_Rotor_Speed(&ChassisData);  // 麦轮解算
+		Chassis_Scale_Rotor_Speed(&ChassisData,0.2f);
 
         // Chassis_Limit_Rotor_Speed(&ChassisData, 800);                                 // 设置转子速度上限 (rad/s)
         // Chassis_Limit_Power(&ChassisData, targetPower, power, powerBuffer, interval); // 根据功率限幅
@@ -456,9 +457,9 @@ void Task_Chassis(void *Parameters) {
 
         // 输出电流值到电调
         Motor_LF.input = PID_LFCM.output * ChassisData.powerScale;
-        //Motor_LB.input = PID_LBCM.output * ChassisData.powerScale;
-		Motor_LB.input = 1000;
-		Motor_LB_Ori.input=500;
+        Motor_LB.input = PID_LBCM.output * ChassisData.powerScale;
+		//Motor_LB.input = 1000;
+		//Motor_LB_Ori.input=500;
         Motor_RB.input = PID_RBCM.output * ChassisData.powerScale;
         Motor_RF.input = PID_RFCM.output * ChassisData.powerScale;
 
