@@ -9,6 +9,7 @@
 #define __DRIVER_Encoder_H
 
 #include "stm32f4xx.h"
+#include "Driver_CAN.h"
 
 typedef enum{
     BR_500K,
@@ -27,7 +28,7 @@ typedef struct {
 }Encoder_Type;
 
 
-void Encoder_Can_Send(CAN_TypeDef *CANx,uint8_t id, uint8_t command,uint8_t data);
+void Encoder_Can_Send(CAN_TypeDef *CANx,uint8_t id, uint8_t command,uint32_t *data,uint8_t length);
 void Encoder_Set_Bitrate(uint8_t id);
 void Encoder_Update(Encoder_Type *encoder, uint8_t data[8]);
 

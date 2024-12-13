@@ -53,7 +53,6 @@ int main(void) {
     BSP_Beep_Init();
     BSP_LED_Init();
     BSP_User_Power_Init();
-    Encoder_Set_Bitrate(1);
 
     // 获得设备ID
     BSP_Stone_Id_Init(&Board_Id, &Robot_Id);
