@@ -11,7 +11,8 @@
 
 typedef struct {
     // 转子转速
-    int16_t rotorSpeed[8];
+    int16_t rotorSpeed[4];
+    int16_t rotorAngle[4];
     float   vx;
     float   vy;
     float   vw;
@@ -54,6 +55,8 @@ void Chassis_Fix(ChassisData_Type *ChassisData, float angle);
  * @brief 麦轮解算, 更新转子转速
  */
 void Chassis_Calculate_Rotor_Speed(ChassisData_Type *ChassisData);
+
+void Chassis_Calculate_Rotor_angle(ChassisData_Type *cd);
 
 /**
  * @brief 设置转子速度上限 (rad/s)

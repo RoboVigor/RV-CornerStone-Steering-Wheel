@@ -90,14 +90,17 @@ int main(void) {
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x201, &Motor_FL);
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x203, &Motor_FR);
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x206, &Motor_Stir);
+	
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x001, &Encoder_LB);
 
     // 总线设置
     Bridge_Bind(&BridgeData, USART_BRIDGE, 7, &Node_Host);
     Bridge_Bind(&BridgeData, USART_BRIDGE, 8, &Node_Judge);
+	
 
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
-
+	
     /*******************************************************************************
      *                                 任务初始化                                   *
      *******************************************************************************/

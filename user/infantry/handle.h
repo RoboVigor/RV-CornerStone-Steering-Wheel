@@ -43,7 +43,7 @@ __HANDLE_EXT volatile uint32_t ulHighFrequencyTimerTicks;
 __HANDLE_EXT uint8_t ControlMode;
 __HANDLE_EXT uint8_t FrictEnabled, StirEnabled, MagzineOpened, FastShootMode;
 __HANDLE_EXT uint8_t PsAimEnabled, PsShootEnabled;
-__HANDLE_EXT uint8_t SwingMode, SafetyMode, PigeonMode,FastmoveMode;
+__HANDLE_EXT uint8_t SwingMode, SafetyMode, PigeonMode, FastmoveMode;
 
 // 上位机
 __HANDLE_EXT uint8_t        FacingEnemyMode;
@@ -75,7 +75,10 @@ __HANDLE_EXT DebugData_Type DebugData;
 // 底盘
 __HANDLE_EXT ChassisData_Type ChassisData;
 __HANDLE_EXT PID_Type         PID_LFCM, PID_LBCM, PID_RBCM, PID_RFCM, PID_YawAngle, PID_YawSpeed;
+__HANDLE_EXT PID_Type         PID_LFORI_CM, PID_LBORI_CM, PID_RBORI_CM, PID_RFORI_CM;
 __HANDLE_EXT uint8_t          PigeonCurrent, PigeonVoltage, PigeonEnergy, PigeonChargeEnable;
+
+__HANDLE_EXT Encoder_Type Encoder_LF, Encoder_RF, Encoder_RB, Encoder_LB;
 
 // 通讯协议
 __HANDLE_EXT ProtocolData_Type ProtocolData;
@@ -84,7 +87,7 @@ __HANDLE_EXT Node_Type         Node_Judge, Node_Host, Node_Board;
 // 弹舱盖舵机
 __HANDLE_EXT PWM_Type PWM_Magazine_Servo;
 
-//发射机构
+// 发射机构
 __HANDLE_EXT Motor_Type Motor_Stir, Motor_FL, Motor_FR;                     // 左/右 摩擦轮 拨弹轮 电机
 __HANDLE_EXT PID_Type   PID_StirSpeed, PID_StirAngle, PID_FireL, PID_FireR; // 拨弹轮 速度/角度 PID
 

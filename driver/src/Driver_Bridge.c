@@ -58,7 +58,7 @@ void Bridge_Receive_CAN(Bridge_Type *bridge, uint8_t type) {
         Motor_Type *motor = MOTOR;
         Motor_Update(motor, CanRxData.Data);
     } 
-    else if(IS_ENCODER){
+    else if(IS_ENCODER&&CanRxData.DLC==7){
         Encoder_Type *encoder = ENCODER;
         Encoder_Update(encoder, CanRxData.Data);
     }

@@ -36,16 +36,34 @@ void Chassis_Fix(ChassisData_Type *cd, float angle) {
 
 void Chassis_Calculate_Rotor_Speed(ChassisData_Type *cd) {
     float coefficient = CHASSIS_INVERSE_WHEEL_RADIUS * CHASSIS_MOTOR_REDUCTION_RATE;
-	/*
+    /*
     cd->rotorSpeed[0] = coefficient * (cd->vy - cd->vx - cd->vw * CHASSIS_SIZE_K);
     cd->rotorSpeed[1] = coefficient * (cd->vy + cd->vx - cd->vw * CHASSIS_SIZE_K);
     cd->rotorSpeed[2] = -coefficient * (cd->vy - cd->vx + cd->vw * CHASSIS_SIZE_K);
     cd->rotorSpeed[3] = -coefficient * (cd->vy + cd->vx + cd->vw * CHASSIS_SIZE_K);
-	*/
-	cd->rotorSpeed[0]=coefficient*sqrt(cd->vy*cd->vy+cd->vx*cd->vx);
-	cd->rotorSpeed[1]=coefficient*sqrt(cd->vy*cd->vy+cd->vx*cd->vx);
-	cd->rotorSpeed[2]=coefficient*sqrt(cd->vy*cd->vy+cd->vx*cd->vx);
-	cd->rotorSpeed[3]=coefficient*sqrt(cd->vy*cd->vy+cd->vx*cd->vx);
+    */
+    cd->rotorSpeed[0] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
+    cd->rotorSpeed[1] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
+    cd->rotorSpeed[2] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
+    cd->rotorSpeed[3] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
+}
+
+void Chassis_Calculate_Rotor_angle(ChassisData_Type *cd) {
+    double coefficient = 180.0 / 3.1415;
+	
+	if((abs(cd->vy)<5)&&(abs(cd->vx)<5))
+		return;
+
+    cd->rotorAngle[0] = coefficient * atan2(cd->vy , -cd->vx);
+    if (cd->vy < 0) cd->rotorAngle[0] = cd->rotorAngle[0]+360;
+    cd->rotorAngle[1] = coefficient * atan2(cd->vy , -cd->vx);
+    if (cd->vy < 0) cd->rotorAngle[1] = cd->rotorAngle[1]+360;
+	if(abs(Encoder_LB.angle-cd->rotorAngle[1])>180)
+		cd->rotorAngle[1]=cd->rotorAngle[1]+(cd->rotorAngle[1]>Encoder_LB.angle ? -1:1)*360;
+    cd->rotorAngle[2] = coefficient * atan2(cd->vy , -cd->vx);
+    if (cd->vy < 0) cd->rotorAngle[2] = cd->rotorAngle[2]+360;
+    cd->rotorAngle[3] = coefficient * atan2(cd->vy , -cd->vx);
+    if (cd->vy < 0) cd->rotorAngle[3] = cd->rotorAngle[3]+360;
 }
 
 void Chassis_Limit_Rotor_Speed(ChassisData_Type *cd, float maxRotorSpeed) {

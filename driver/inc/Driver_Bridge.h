@@ -50,7 +50,7 @@ static usart_t USART[] = {{},
 #define USARTx_Rx (USART[deviceID].Rx)
 
 #define IS_MOTOR (deviceID <= 0x2FF && deviceID >= 0x1FF)
-#define IS_ENCODER (deviceID < 0x100)
+#define IS_ENCODER (deviceID < 0x06)
 #define IS_CAN (type != USART_BRIDGE)
 
 #define MOTOR (bridge->motors[deviceID - 0x201 + (type == CAN2_BRIDGE ? 12 : 0)])
