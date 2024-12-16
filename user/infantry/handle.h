@@ -1,6 +1,9 @@
 #ifndef __HANDLE_H
 #define __HANDLE_H
 
+#include "stdlib.h"
+#include "math.h"
+
 #include "sys.h"
 #include "delay.h"
 #include "led.h"

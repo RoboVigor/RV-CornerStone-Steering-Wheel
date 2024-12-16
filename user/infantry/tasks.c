@@ -443,11 +443,9 @@ void Task_Chassis(void *Parameters) {
 		ChassisData.rotorAngle[1]=90;
 		//if (ChassisData.vy < 0) ChassisData.rotorAngle[1] = ChassisData.rotorAngle[1]+360;
 		float angleDiff = Encoder_LB.angle - ChassisData.rotorAngle[1];
-		if (angleDiff > 180) {
-			ChassisData.rotorAngle[1] += 360;
-		} else if (angleDiff < -180) {
-			ChassisData.rotorAngle[1] -= 360;
-}
+		if (abs(angleDiff) > 180) 
+			ChassisData.rotorAngle[1] += (ChassisData.rotorAngle[1]>Encoder_LB.angle ? -1:1)*360;
+
         // 计算输出电流PID
         PID_Calculate(&PID_LFCM, ChassisData.rotorSpeed[0], Motor_LF.speed * RPM2RPS);
         PID_Calculate(&PID_LBCM, ChassisData.rotorSpeed[1], Motor_LB.speed * RPM2RPS);
