@@ -56,6 +56,7 @@ void Chassis_Calculate_Rotor_angle(ChassisData_Type *cd) {
 
     cd->rotorAngle[0] = coefficient * atan2(cd->vy , -cd->vx);
     if (cd->vy < 0) cd->rotorAngle[0] = cd->rotorAngle[0]+360;
+	cd->rotorAngle[1]=180;
     cd->rotorAngle[1] = coefficient * atan2(cd->vy , -cd->vx);
     if (cd->vy < 0) cd->rotorAngle[1] = cd->rotorAngle[1]+360;
 	if(abs(Encoder_LB.angle-cd->rotorAngle[1])>180)
