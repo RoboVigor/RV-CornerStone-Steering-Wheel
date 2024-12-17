@@ -257,7 +257,7 @@ void Task_Chassis(void *Parameters) {
     PID_Init(&PID_RBCM, 20, 0, 0, 6000, 1200);
     PID_Init(&PID_RFCM, 20, 0, 0, 6000, 1200);
     PID_Init(&PID_LFORI_CM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_LBORI_CM, 40, 0, 0, 800, 0);
+    PID_Init(&PID_LBORI_CM, 150, 0, 2000, 1500, 0);
     PID_Init(&PID_RBORI_CM, 20, 0, 0, 6000, 1200);
     PID_Init(&PID_RFORI_CM, 20, 0, 0, 6000, 1200);
 
@@ -440,12 +440,6 @@ void Task_Chassis(void *Parameters) {
             Chassis_Limit_Power(&ChassisData, targetPower, power, powerBuffer, interval); // 根据功率限幅
         }
 		
-		ChassisData.rotorAngle[1]=90;
-		//if (ChassisData.vy < 0) ChassisData.rotorAngle[1] = ChassisData.rotorAngle[1]+360;
-		float angleDiff = Encoder_LB.angle - ChassisData.rotorAngle[1];
-		if (abs(angleDiff) > 180) 
-			ChassisData.rotorAngle[1] += (ChassisData.rotorAngle[1]>Encoder_LB.angle ? -1:1)*360;
-
         // 计算输出电流PID
         PID_Calculate(&PID_LFCM, ChassisData.rotorSpeed[0], Motor_LF.speed * RPM2RPS);
         PID_Calculate(&PID_LBCM, ChassisData.rotorSpeed[1], Motor_LB.speed * RPM2RPS);
