@@ -16,6 +16,8 @@ typedef struct {
     float   vx;
     float   vy;
     float   vw;
+	float   rotorVx[4];
+	float   rotorVy[4];
     // 功率限制
     PID_Type PID_Power;
     float    power;

@@ -26,6 +26,9 @@ int main(void) {
     Motor_Init(&Motor_RB, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RF, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_LB_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
+    Motor_Init(&Motor_LF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
+    Motor_Init(&Motor_RF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
+    Motor_Init(&Motor_RB_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
 
     // 发射机构电机
     Motor_Init(&Motor_Stir, STIR_MOTOR_REDUCTION_RATE, ENABLE, ENABLE); //拨弹
@@ -80,18 +83,24 @@ int main(void) {
         Gyroscope_Set_Bias(&ImuData, 10, -28, -1);
     }
 
-	Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x201, &Motor_LB_Ori);
-	Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x202, &Motor_LF);
-    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x203, &Motor_LB);
-    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x204, &Motor_RB);
-    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x205, &Motor_RF);
+	Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x201, &Motor_LB_Ori);
+	Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x203, &Motor_LF_Ori);
+	Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x205, &Motor_RF_Ori);
+	Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x207, &Motor_RB_Ori);
+	Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x202, &Motor_LB);
+    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x204, &Motor_LF);
+    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x206, &Motor_RF);
+    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x208, &Motor_RB);
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x208, &Motor_Pitch);
-    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x209, &Motor_Yaw);
-    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x201, &Motor_FL);
+    Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x20A, &Motor_Yaw);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x202, &Motor_FL);
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x203, &Motor_FR);
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x206, &Motor_Stir);
 	
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x001, &Encoder_LB);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x002, &Encoder_LF);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x003, &Encoder_RF);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x004, &Encoder_RB);
 
     // 总线设置
     Bridge_Bind(&BridgeData, USART_BRIDGE, 7, &Node_Host);

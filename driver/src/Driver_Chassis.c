@@ -23,6 +23,10 @@ void Chassis_Update(ChassisData_Type *cd, float vx, float vy, float vw) {
     cd->vx = vx;
     cd->vy = vy;
     cd->vw = vw;
+	cd->rotorVx[0]=cd->vx-cd->vw;cd->rotorVy[0]=cd->vy+cd->vw;
+	cd->rotorVx[1]=cd->vx+cd->vw;cd->rotorVy[1]=cd->vy+cd->vw;
+	cd->rotorVx[2]=cd->vx+cd->vw;cd->rotorVy[2]=cd->vy-cd->vw;
+	cd->rotorVx[3]=cd->vx-cd->vw;cd->rotorVy[3]=cd->vy-cd->vw;
 }
 
 void Chassis_Fix(ChassisData_Type *cd, float angle) {
@@ -42,10 +46,9 @@ void Chassis_Calculate_Rotor_Speed(ChassisData_Type *cd) {
     cd->rotorSpeed[2] = -coefficient * (cd->vy - cd->vx + cd->vw * CHASSIS_SIZE_K);
     cd->rotorSpeed[3] = -coefficient * (cd->vy + cd->vx + cd->vw * CHASSIS_SIZE_K);
     */
-    cd->rotorSpeed[0] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
-    cd->rotorSpeed[1] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
-    cd->rotorSpeed[2] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
-    cd->rotorSpeed[3] = coefficient * sqrt(cd->vy * cd->vy + cd->vx * cd->vx);
+	int i;
+	for(i=0;i<4;i++)
+		cd->rotorSpeed[i] = coefficient * sqrt(cd->rotorVy[i] * cd->rotorVy[i] + cd->rotorVx[i] * cd->rotorVx[i]);
 }
 
 void Chassis_Calculate_Rotor_angle(ChassisData_Type *cd) {
@@ -54,19 +57,25 @@ void Chassis_Calculate_Rotor_angle(ChassisData_Type *cd) {
 	//if((abs(cd->vy)<5)&&(abs(cd->vx)<5))
 		//return;
 
-	if(abs(cd->vy)>3||abs(cd->vx)>3){
-		cd->rotorAngle[0] = coefficient * atan2(cd->vy , -cd->vx);
-		if (cd->vy < 0) cd->rotorAngle[0] = cd->rotorAngle[0]+360;
-		cd->rotorAngle[1] = coefficient * atan2(cd->vy , -cd->vx);
-		if (cd->vy < 0) cd->rotorAngle[1] = cd->rotorAngle[1]+360;
-		cd->rotorAngle[2] = coefficient * atan2(cd->vy , -cd->vx);
-		if (cd->vy < 0) cd->rotorAngle[2] = cd->rotorAngle[2]+360;
-		cd->rotorAngle[3] = coefficient * atan2(cd->vy , -cd->vx);
-		if (cd->vy < 0) cd->rotorAngle[3] = cd->rotorAngle[3]+360;
+	int i;
+	for(i=0;i<4;i++){
+		if(abs(cd->rotorVy[i])>0||abs(cd->rotorVx[i])>0){
+			
+			cd->rotorAngle[i] = coefficient * atan2(cd->rotorVy[i] , cd->rotorVx[i]);
+			if (cd->vy < 0) cd->rotorAngle[i] = cd->rotorAngle[i]+360;
+		
+		}
+
 	}
 	
-	if(abs(Encoder_LB.angle-cd->rotorAngle[1])>180)
-		cd->rotorAngle[1]=cd->rotorAngle[1]+(cd->rotorAngle[1]>Encoder_LB.angle ? -1:1)*360;
+	if(abs(Encoder_LB.angle-cd->rotorAngle[0])>180)
+		cd->rotorAngle[0]+=(cd->rotorAngle[0]>Encoder_LB.angle ? -1:1)*360;
+	if(abs(Encoder_LF.angle-cd->rotorAngle[1])>180)
+		cd->rotorAngle[1]+=(cd->rotorAngle[1]>Encoder_LF.angle ? -1:1)*360;
+	if(abs(Encoder_RF.angle-cd->rotorAngle[2])>180)
+		cd->rotorAngle[2]+=(cd->rotorAngle[2]>Encoder_RF.angle ? -1:1)*360;
+	if(abs(Encoder_RB.angle-cd->rotorAngle[3])>180)
+		cd->rotorAngle[3]+=(cd->rotorAngle[3]>Encoder_RB.angle ? -1:1)*360;
 }
 
 void Chassis_Limit_Rotor_Speed(ChassisData_Type *cd, float maxRotorSpeed) {

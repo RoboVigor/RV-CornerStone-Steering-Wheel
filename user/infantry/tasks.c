@@ -74,6 +74,9 @@ void Task_Can_Send(void *Parameters) {
     while (1) {
         Bridge_Send_Motor(&BridgeData, SafetyMode);
 		Encoder_Can_Send(CAN2,0x01,0x01,0x00);
+		Encoder_Can_Send(CAN2,0x02,0x01,0x00);
+		Encoder_Can_Send(CAN2,0x03,0x01,0x00);
+		Encoder_Can_Send(CAN2,0x04,0x01,0x00);
         vTaskDelayUntil(&LastWakeTime, intervalms); // 发送频率
     }
     vTaskDelete(NULL);
@@ -252,14 +255,14 @@ void Task_Chassis(void *Parameters) {
     PID_Init(&PID_Follow_Speed, 3, 6, 0, 900, 0);
 
     // 麦轮速度PID
-    PID_Init(&PID_LFCM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_LBCM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_RBCM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_RFCM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_LFORI_CM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_LBORI_CM, 150, 0, 2000, 1500, 0);
-    PID_Init(&PID_RBORI_CM, 20, 0, 0, 6000, 1200);
-    PID_Init(&PID_RFORI_CM, 20, 0, 0, 6000, 1200);
+    PID_Init(&PID_LFCM, 20, 0, 0, 10000, 1200);
+    PID_Init(&PID_LBCM, 20, 0, 0, 10000, 1200);
+    PID_Init(&PID_RBCM, 20, 0, 0, 10000, 1200);
+    PID_Init(&PID_RFCM, 20, 0, 0, 10000, 1200);
+    PID_Init(&PID_LFORI_CM, 200, 0, 2000, 6000, 0);
+    PID_Init(&PID_LBORI_CM, 200, 0, 2000, 6000, 0);
+    PID_Init(&PID_RBORI_CM, 200, 0, 2000, 6000, 0);
+    PID_Init(&PID_RFORI_CM, 200, 0, 2000, 6000, 0);
 
     // 初始化底盘
     Chassis_Init(&ChassisData);
@@ -355,14 +358,8 @@ void Task_Chassis(void *Parameters) {
         vy = 0;
         vw = 0;
         if (ControlMode == 1) {
-            if (ROBOT_MIAO || ROBOT_WANG) {
-                vx = -remoteData.lx / 660.0f * 20.0;
-                vy = remoteData.ly / 660.0f * 20.0;
-            }
-            if (ROBOT_SHARK) {
-                vx = -remoteData.lx / 660.0f * 20.0;
-                vy = remoteData.ly / 660.0f * 20.0;
-            }
+			vx = remoteData.lx / 660.0f * 20.0;
+			vy = remoteData.ly / 660.0f * 20.0;
 
         } else if (ControlMode == 2) {
             xTargetRamp = RAMP(xRampStart, 660, xRampProgress);
@@ -396,7 +393,8 @@ void Task_Chassis(void *Parameters) {
             }
         }
         // 底盘跟随云台
-        vw = ABS(PID_Follow_Angle.error) < followDeadRegion ? 0 : (-1 * PID_Follow_Speed.output * DPS2RPS);
+        //vw = ABS(PID_Follow_Angle.error) < followDeadRegion ? 0 : (-1 * PID_Follow_Speed.output * DPS2RPS);
+		vw=remoteData.rx / 660.0f*90;
 
         // Host control
         vx += HostChassisData.vx;
@@ -445,18 +443,23 @@ void Task_Chassis(void *Parameters) {
         PID_Calculate(&PID_LBCM, ChassisData.rotorSpeed[1], Motor_LB.speed * RPM2RPS);
         PID_Calculate(&PID_RBCM, ChassisData.rotorSpeed[2], Motor_RB.speed * RPM2RPS);
         PID_Calculate(&PID_RFCM, ChassisData.rotorSpeed[3], Motor_RF.speed * RPM2RPS);
-        PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[0], Encoder_LF.angle);
-        PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[1], Encoder_LB.angle);
-        PID_Calculate(&PID_RBORI_CM, ChassisData.rotorAngle[2], Encoder_RB.angle);
-        PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[3], Encoder_RF.angle);
+        PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[0], Encoder_LB.angle);
+        PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[1], Encoder_LF.angle);
+        PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[2], Encoder_RF.angle);
+        PID_Calculate(&PID_RBORI_CM, ChassisData.rotorAngle[3], Encoder_RB.angle);
 
         // 输出电流值到电调
         Motor_LF.input = PID_LFCM.output * ChassisData.powerScale;
         Motor_LB.input = PID_LBCM.output * ChassisData.powerScale;
-        // Motor_LB.input = 1000;
+        //Motor_LB.input = 1000;
         Motor_RB.input     = PID_RBCM.output * ChassisData.powerScale;
         Motor_RF.input     = PID_RFCM.output * ChassisData.powerScale;
-        Motor_LB_Ori.input = PID_LBORI_CM.output;
+        
+		Motor_LB_Ori.input = PID_LBORI_CM.output;
+		Motor_LF_Ori.input = PID_LFORI_CM.output;
+		Motor_RF_Ori.input = PID_RFORI_CM.output;
+		Motor_RB_Ori.input = PID_RBORI_CM.output;
+		//Motor_LB_Ori.input = 1000;
 
         // 调试信息
         // DebugData.debug1 = vx * 1000;
