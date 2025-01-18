@@ -259,10 +259,10 @@ void Task_Chassis(void *Parameters) {
     PID_Init(&PID_LBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RFCM, 20, 0, 0, 10000, 1200);
-    PID_Init(&PID_LFORI_CM, 200, 0, 2000, 6000, 0);
-    PID_Init(&PID_LBORI_CM, 200, 0, 2000, 6000, 0);
-    PID_Init(&PID_RBORI_CM, 200, 0, 2000, 6000, 0);
-    PID_Init(&PID_RFORI_CM, 200, 0, 2000, 6000, 0);
+    PID_Init(&PID_LFORI_CM, 200, 0, 2000, 1000, 0);
+    PID_Init(&PID_LBORI_CM, 200, 0, 2000, 1000, 0);
+    PID_Init(&PID_RBORI_CM, 200, 0, 2000, 1000, 0);
+    PID_Init(&PID_RFORI_CM, 200, 0, 2000, 1000, 0);
 
     // 初始化底盘
     Chassis_Init(&ChassisData);
@@ -425,8 +425,8 @@ void Task_Chassis(void *Parameters) {
 
         Chassis_Update(&ChassisData, vx, vy, vwRamp); // 更新麦轮转速
         // Chassis_Fix(&ChassisData, motorAngle);        // 修正旋转后底盘的前进方向
+		Chassis_Calculate_Rotor_Angle(&ChassisData);
         Chassis_Calculate_Rotor_Speed(&ChassisData); // 麦轮解算
-		Chassis_Calculate_Rotor_angle(&ChassisData);
         Chassis_Scale_Rotor_Speed(&ChassisData, 0.2f);
 
         // Chassis_Limit_Rotor_Speed(&ChassisData, 800);                                 // 设置转子速度上限 (rad/s)
@@ -439,10 +439,10 @@ void Task_Chassis(void *Parameters) {
         }
 		
         // 计算输出电流PID
-        PID_Calculate(&PID_LFCM, ChassisData.rotorSpeed[0], Motor_LF.speed * RPM2RPS);
-        PID_Calculate(&PID_LBCM, ChassisData.rotorSpeed[1], Motor_LB.speed * RPM2RPS);
-        PID_Calculate(&PID_RBCM, ChassisData.rotorSpeed[2], Motor_RB.speed * RPM2RPS);
-        PID_Calculate(&PID_RFCM, ChassisData.rotorSpeed[3], Motor_RF.speed * RPM2RPS);
+        PID_Calculate(&PID_LBCM, ChassisData.rotorSpeed[0], Motor_LB.speed * RPM2RPS);
+        PID_Calculate(&PID_LFCM, ChassisData.rotorSpeed[1], Motor_LF.speed * RPM2RPS);
+        PID_Calculate(&PID_RFCM, ChassisData.rotorSpeed[2], Motor_RF.speed * RPM2RPS);
+        PID_Calculate(&PID_RBCM, ChassisData.rotorSpeed[3], Motor_RB.speed * RPM2RPS);
         PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[0], Encoder_LB.angle);
         PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[1], Encoder_LF.angle);
         PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[2], Encoder_RF.angle);

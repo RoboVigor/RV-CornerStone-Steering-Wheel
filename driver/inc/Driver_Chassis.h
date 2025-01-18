@@ -13,11 +13,13 @@ typedef struct {
     // 转子转速
     int16_t rotorSpeed[4];
     int16_t rotorAngle[4];
+    double  encoderAngle[4];
     float   vx;
     float   vy;
     float   vw;
 	float   rotorVx[4];
 	float   rotorVy[4];
+    char    state[4];
     // 功率限制
     PID_Type PID_Power;
     float    power;
@@ -58,7 +60,7 @@ void Chassis_Fix(ChassisData_Type *ChassisData, float angle);
  */
 void Chassis_Calculate_Rotor_Speed(ChassisData_Type *ChassisData);
 
-void Chassis_Calculate_Rotor_angle(ChassisData_Type *cd);
+void Chassis_Calculate_Rotor_Angle(ChassisData_Type *ChassisData);
 
 /**
  * @brief 设置转子速度上限 (rad/s)
