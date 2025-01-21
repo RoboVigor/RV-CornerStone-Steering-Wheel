@@ -61,8 +61,10 @@ int main(void) {
     BSP_Stone_Id_Init(&Board_Id, &Robot_Id);
 
     // USART
+    BSP_USART6_Init(115200, USART_IT_IDLE);
     BSP_UART7_Init(115200, USART_IT_IDLE);
     BSP_UART8_Init(115200, USART_IT_IDLE);
+	
 
     // Servo
     BSP_PWM_Set_Port(&PWM_Magazine_Servo, PWM_PH10);
@@ -105,6 +107,7 @@ int main(void) {
     // 总线设置
     Bridge_Bind(&BridgeData, USART_BRIDGE, 7, &Node_Host);
     Bridge_Bind(&BridgeData, USART_BRIDGE, 8, &Node_Judge);
+    Bridge_Bind(&BridgeData, USART_BRIDGE, 6, &Node_Motor);
 	
 
     // 陀螺仪
@@ -119,26 +122,20 @@ int main(void) {
     //}
     xTaskCreate(Task_Blink, "Task_Blink", 400, NULL, 3, NULL);
     //模式切换任务
-    xTaskCreate(Task_Control, "Task_Control", 400, NULL, 9, NULL);
+    xTaskCreate(Task_Control, "Task_Control", 400, NULL, 7, NULL);
 
     // Can发送任务
     xTaskCreate(Task_Can_Send, "Task_Can_Send", 500, NULL, 5, NULL);
 
     // 运动控制任务
     xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
-    //xTaskCreate(Task_Gimbal, "Task_Gimbal", 500, NULL, 5, NULL);
-    xTaskCreate(Task_Fire_Stir, "Task_Fire_Stir", 400, NULL, 6, NULL);
-    xTaskCreate(Task_Fire_Frict, "Task_Fire_Frict", 400, NULL, 6, NULL);
-	xTaskCreate(Task_Wait,"Task_Wait",400,NULL,5,NULL);
-
-	xTaskCreate(Task_Wait,"Task_Wait",400,NULL,5,NULL);
-	
+    xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
     // DMA发送任务
     //xTaskCreate(Task_Startup_Music, "Task_Startup_Music", 500, NULL, 6, NULL);
 
     // 定义协议发送频率
-    Bridge_Send_Protocol(&Node_Host, 0x120, 1);  // 心跳包
-    Bridge_Send_Protocol(&Node_Host, 0x403, 20); // 陀螺仪
+    //Bridge_Send_Protocol(&Node_Host, 0x120, 1);  // 心跳包
+    //Bridge_Send_Protocol(&Node_Host, 0x403, 20); // 陀螺仪
     // Bridge_Send_Protocol(&Node_Host, 0x404, 10); // 遥控器
     // Bridge_Send_Protocol(&Node_Judge, 0XF101, 10); // 遥控器
 

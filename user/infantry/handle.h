@@ -44,7 +44,7 @@ __HANDLE_EXT volatile uint32_t ulHighFrequencyTimerTicks;
 
 // 功能开关
 __HANDLE_EXT uint8_t ControlMode;
-__HANDLE_EXT uint8_t FrictEnabled, StirEnabled, MagzineOpened, FastShootMode;
+__HANDLE_EXT uint8_t FrictEnabled, StirEnabled, BumperEnabled, MagzineOpened, FastShootMode;
 __HANDLE_EXT uint8_t PsAimEnabled, PsShootEnabled;
 __HANDLE_EXT uint8_t SwingMode, SafetyMode, PigeonMode, FastmoveMode;
 
@@ -85,7 +85,7 @@ __HANDLE_EXT Encoder_Type Encoder_LF, Encoder_RF, Encoder_RB, Encoder_LB;
 
 // 通讯协议
 __HANDLE_EXT ProtocolData_Type ProtocolData;
-__HANDLE_EXT Node_Type         Node_Judge, Node_Host, Node_Board;
+__HANDLE_EXT Node_Type         Node_Judge, Node_Host, Node_Board,Node_Motor;
 
 // 弹舱盖舵机
 __HANDLE_EXT PWM_Type PWM_Magazine_Servo;
