@@ -52,7 +52,7 @@ void Chassis_Calculate_Rotor_Speed(ChassisData_Type *cd) {
     */
 	int i;
 	for(i=0;i<4;i++)
-		cd->rotorSpeed[i] = coefficient * sqrt(cd->rotorVy[i] * cd->rotorVy[i] + cd->rotorVx[i] * cd->rotorVx[i]) * cd->state[i];
+		cd->rotorSpeed[i] = coefficient * sqrt(cd->rotorVy[i] * cd->rotorVy[i] + cd->rotorVx[i] * cd->rotorVx[i]);
 }
 
 void Chassis_Calculate_Rotor_Angle(ChassisData_Type *cd) {
@@ -71,12 +71,13 @@ void Chassis_Calculate_Rotor_Angle(ChassisData_Type *cd) {
 		}
         if(ABS(cd->encoderAngle[i]-cd->rotorAngle[i])>180) 
             cd->rotorAngle[i]+=(cd->rotorAngle[i]>cd->encoderAngle[i] ? -1:1)*360;
-		
+		/*
         cd->state[i]=1;
         if(ABS(cd->encoderAngle[i]-cd->rotorAngle[i])>90){
             cd->state[i]=-1;
             cd->rotorAngle[i] +=((cd->encoderAngle[i]<cd->rotorAngle[i]) ? -1:1)*180;
         }
+		*/
 	}
 	
 }
