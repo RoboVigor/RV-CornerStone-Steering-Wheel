@@ -144,7 +144,7 @@ void BSP_USART_Init(USART_TypeDef *USARTx,
     GPIO_PinAFConfig(GPIOx, GPIO_PinSourcey, GPIO_AF_USARTx); // GPIO复用
     GPIO_InitStructure.GPIO_Pin   = GPIO_Pin;                 // GPIO复用
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;             // 复用功能
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;         // 速度50MHz todo:测试2MHz
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz   ;// 速度50MHz todo:测试2MHz
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;            // 推挽复用输出
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;             // 上拉
     GPIO_Init(GPIOx, &GPIO_InitStructure);                    // 初始化

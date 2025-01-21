@@ -59,6 +59,9 @@
 #define ADC_Channel17 0x00020000
 #define ADC_Channel18 0x00040000
 
+#define Bumper_ON() GPIO_SetBits(GPIOH, GPIO_Pin_2);
+#define Bumper_OFF() GPIO_ResetBits(GPIOH, GPIO_Pin_2);
+
 typedef struct {
     uint32_t      RCC_APBxPeriph_TIMx;
     uint32_t      TIMx_BASE;
