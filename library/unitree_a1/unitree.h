@@ -22,13 +22,6 @@ typedef struct{
     CAL
 }motor_status_type;
 
-typedef struct{
-    unitree_id_type id_t;
-    unitree_data_type data_t;
-    uint8_t k_spd;
-    uint8_t k_pos;
-
-}Unitree_Type
 
 typedef union {
     struct {
@@ -51,6 +44,14 @@ typedef union {
     uint8_t data[4]; 
 } unitree_data_type;
 
-void Unitree_Init(Unitree_Type *unitree, uint8_t motor_id,uint8_t id)
+typedef struct{
+    unitree_id_type id_t;
+    unitree_data_type data_t;
+    uint8_t k_spd;
+    uint8_t k_pos;
+
+}Unitree_Type;
+
+void Unitree_Init(Unitree_Type *unitree ,uint8_t id , uint8_t motor_id,uint8_t k_spd,uint8_t k_pos);
 
 #endif

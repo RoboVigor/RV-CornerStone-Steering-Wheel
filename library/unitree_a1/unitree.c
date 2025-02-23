@@ -7,3 +7,4 @@ void Unitree_Init(Unitree_Type *unitree ,uint8_t id , uint8_t motor_id,uint8_t k
     unitree->k_pos = k_pos;
 
 }
+
