@@ -1,6 +1,6 @@
 #include "Driver_CAN.h"
 
-void Can_Send(CAN_TypeDef *CANx, int16_t id, int16_t i_201, int16_t i_202, int16_t i_203, int16_t i_204) {
+void Can_Send(CAN_TypeDef *CANx, int32_t id, int16_t i_201, int16_t i_202, int16_t i_203, int16_t i_204) {
     CanTxMsg CanTxData;
     uint8_t  mailBox;
 
@@ -38,7 +38,7 @@ void Can_Send(CAN_TypeDef *CANx, int16_t id, int16_t i_201, int16_t i_202, int16
     }
 }
 
-void Can_Send_Msg(CAN_TypeDef *CANx, int16_t id, uint8_t *sendBuf, uint16_t length) {
+void Can_Send_Msg(CAN_TypeDef *CANx, int32_t id, uint8_t *sendBuf, uint16_t length) {
     int data[4];
     int i;
 

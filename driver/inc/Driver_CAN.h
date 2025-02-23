@@ -22,7 +22,7 @@
  * @param i_203 第5、6个字节(0x203地址电机给定电流值,范围-32768~32768)
  * @param i_204 第7、8个字节(0x204地址电机给定电流值,范围-32768~32768)
  */
-void Can_Send(CAN_TypeDef *CANx, int16_t stdId, int16_t i_201, int16_t i_202, int16_t i_203, int16_t i_204);
+void Can_Send(CAN_TypeDef *CANx, int32_t stdId, int16_t i_201, int16_t i_202, int16_t i_203, int16_t i_204);
 
 /**
  * @brief CAN打包并发送
@@ -32,5 +32,5 @@ void Can_Send(CAN_TypeDef *CANx, int16_t stdId, int16_t i_201, int16_t i_202, in
  * @param sendbuff 发送缓存区
  * @param length 缓存区长度
  */
-void Can_Send_Msg(CAN_TypeDef *CANx, int16_t stdId, uint8_t sendBuf[128], uint16_t length);
+void Can_Send_Msg(CAN_TypeDef *CANx, int32_t stdId, uint8_t sendBuf[128], uint16_t length);
 #endif
