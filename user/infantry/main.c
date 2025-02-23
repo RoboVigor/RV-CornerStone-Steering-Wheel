@@ -39,6 +39,8 @@ int main(void) {
     Motor_Init(&Motor_Yaw, GIMBAL_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);   // 顺时针为正电流
     Motor_Init(&Motor_Pitch, GIMBAL_MOTOR_REDUCTION_RATE, ENABLE, ENABLE); // 顺时针为正电流
 
+    Motor_Init(&Motor_Arm, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE,ENABLE);
+
     // 遥控器数据初始化
     DBUS_Init(&remoteData, &keyboardData, &mouseData);
 
@@ -61,7 +63,7 @@ int main(void) {
     BSP_Stone_Id_Init(&Board_Id, &Robot_Id);
 
     // USART
-    BSP_USART6_Init(115200, USART_IT_IDLE);
+    BSP_USART6_Init(9600, USART_IT_IDLE);
     BSP_UART7_Init(115200, USART_IT_IDLE);
     BSP_UART8_Init(115200, USART_IT_IDLE);
 	
@@ -104,10 +106,11 @@ int main(void) {
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x003, &Encoder_RF);
     Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x004, &Encoder_RB);
 
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x205, &Motor_Arm);
+
     // 总线设置
     Bridge_Bind(&BridgeData, USART_BRIDGE, 7, &Node_Host);
     Bridge_Bind(&BridgeData, USART_BRIDGE, 8, &Node_Judge);
-    Bridge_Bind(&BridgeData, USART_BRIDGE, 6, &Node_Motor);
 	
 
     // 陀螺仪
@@ -120,16 +123,16 @@ int main(void) {
     // 等待遥控器开启
      //while (!remoteData.state) {
     //}
-    xTaskCreate(Task_Blink, "Task_Blink", 400, NULL, 3, NULL);
+    //xTaskCreate(Task_Blink, "Task_Blink", 400, NULL, 3, NULL);
     //模式切换任务
-    xTaskCreate(Task_Control, "Task_Control", 400, NULL, 7, NULL);
+    //xTaskCreate(Task_Control, "Task_Control", 400, NULL, 7, NULL);
 
     // Can发送任务
     xTaskCreate(Task_Can_Send, "Task_Can_Send", 500, NULL, 5, NULL);
 
     // 运动控制任务
-    xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
-    xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
+    //xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
+    //xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
     // DMA发送任务
     //xTaskCreate(Task_Startup_Music, "Task_Startup_Music", 500, NULL, 6, NULL);
 

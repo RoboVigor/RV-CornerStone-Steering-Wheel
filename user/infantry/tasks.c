@@ -68,7 +68,7 @@ void Task_Control(void *Parameters) {
 
 void Task_Can_Send(void *Parameters) {
     TickType_t LastWakeTime = xTaskGetTickCount(); // 时钟
-    float      interval     = 0.01;                // 任务运行间隔 s
+    float      interval     = 0.001;                // 任务运行间隔 s
     int        intervalms   = interval * 1000;     // 任务运行间隔 ms
     while (1) {
         Bridge_Send_Motor(&BridgeData, SafetyMode);
@@ -78,9 +78,9 @@ void Task_Can_Send(void *Parameters) {
 		Encoder_Can_Send(CAN2,0x04,0x01,0x00);
         //USART_SendData(USART6, 0x01);	
 
-        //DMA_Disable(USART6_Tx);
-        //DMA_Enable(USART6_Tx,17);
-        
+		//DMA_Disable(USART6_Tx);
+		//DMA_Enable(USART6_Tx,17);
+			
         vTaskDelayUntil(&LastWakeTime, intervalms); // 发送频率
     }
     vTaskDelete(NULL);
@@ -92,6 +92,11 @@ void Task_Arm(void *Parameters) {
     float      interval     = 0.005;               // 任务运行间隔 s
     int        intervalms   = interval * 1000;     // 任务运行间隔 ms
 	
+	
+    float armAngleTargetControl     = 0;
+    
+    PID_Init(&PID_ArmAngle, 60, 0, 0, 16000, 10);
+	
 	while(1){
 		if(BumperEnabled){
             Bumper_ON();
@@ -99,6 +104,11 @@ void Task_Arm(void *Parameters) {
         else
             Bumper_OFF();
 
+        armAngleTargetControl += remoteData.ry / 660.0f * 360 * interval;
+		
+        PID_Calculate(&PID_ArmAngle, armAngleTargetControl, Motor_Arm.angle);
+
+        Motor_Arm.input=-PID_ArmAngle.output;
 
         vTaskDelayUntil(&LastWakeTime, intervalms);
     }
@@ -145,10 +155,10 @@ void Task_Chassis(void *Parameters) {
     PID_Init(&PID_LBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RFCM, 20, 0, 0, 10000, 1200);
-    PID_Init(&PID_LFORI_CM, 200, 0, 2000, 5000, 0);
-    PID_Init(&PID_LBORI_CM, 200, 0, 2000, 5000, 0);
-    PID_Init(&PID_RBORI_CM, 200, 0, 2000, 5000, 0);
-    PID_Init(&PID_RFORI_CM, 200, 0, 2000, 5000, 0);
+    PID_Init(&PID_LFORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_LBORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_RBORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_RFORI_CM, 200, 0, 1000, 5000, 0);
 
     // 初始化底盘
     Chassis_Init(&ChassisData);
@@ -160,6 +170,7 @@ void Task_Chassis(void *Parameters) {
     float yRampProgress = 0;
     float yRampStart    = 0;
     float yTargetRamp   = 0;
+	
 
     while (1) {
         // 设置反馈值

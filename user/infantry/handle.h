@@ -56,6 +56,7 @@ __HANDLE_EXT chassis_data_t HostChassisData;
 // 电机
 __HANDLE_EXT Motor_Type Motor_LF, Motor_RF, Motor_RB, Motor_LB, Motor_LAJI;
 __HANDLE_EXT Motor_Type Motor_LF_Ori, Motor_RF_Ori, Motor_RB_Ori, Motor_LB_Ori;
+__HANDLE_EXT Motor_Type Motor_Arm;
 
 // 云台
 __HANDLE_EXT Motor_Type Motor_Yaw, Motor_Pitch;
@@ -79,6 +80,7 @@ __HANDLE_EXT DebugData_Type DebugData;
 __HANDLE_EXT ChassisData_Type ChassisData;
 __HANDLE_EXT PID_Type         PID_LFCM, PID_LBCM, PID_RBCM, PID_RFCM, PID_YawAngle, PID_YawSpeed;
 __HANDLE_EXT PID_Type         PID_LFORI_CM, PID_LBORI_CM, PID_RBORI_CM, PID_RFORI_CM;
+__HANDLE_EXT PID_Type         PID_ArmAngle,PID_ArmSpeed;
 __HANDLE_EXT uint8_t          PigeonCurrent, PigeonVoltage, PigeonEnergy, PigeonChargeEnable;
 
 __HANDLE_EXT Encoder_Type Encoder_LF, Encoder_RF, Encoder_RB, Encoder_LB;
