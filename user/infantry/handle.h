@@ -24,6 +24,7 @@
 #include "Driver_Motor.h"
 #include "Driver_Chassis.h"
 #include "mpu6500_driver.h"
+#include "unitree.h"
 #include "Driver_Gyroscope.h"
 #include "Driver_Protocol.h"
 #include "Driver_Bridge.h"
@@ -57,6 +58,7 @@ __HANDLE_EXT chassis_data_t HostChassisData;
 __HANDLE_EXT Motor_Type Motor_LF, Motor_RF, Motor_RB, Motor_LB, Motor_LAJI;
 __HANDLE_EXT Motor_Type Motor_LF_Ori, Motor_RF_Ori, Motor_RB_Ori, Motor_LB_Ori;
 __HANDLE_EXT Motor_Type Motor_Arm;
+__HANDLE_EXT Unitree_Type Motor_Arm_1;
 
 // 云台
 __HANDLE_EXT Motor_Type Motor_Yaw, Motor_Pitch;
