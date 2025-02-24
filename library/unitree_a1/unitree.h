@@ -34,24 +34,24 @@ typedef union {
 } unitree_data_type;
 
 typedef struct {
-    unitree_id_type   id_t;
-    unitree_data_type data_t;
+    unitree_id_type   *id_t;
+    unitree_data_type *data_t;
     uint8_t           k_spd;
     uint8_t           k_pos;
 
     void (*_Unitree_Init)(struct Unitree_Type *unitree, uint8_t id, uint8_t motor_id, uint8_t k_spd, uint8_t k_pos);
 
     void (*_Unitree_Set_Id)(struct Unitree_Type *unitree, uint8_t id, uint8_t motor_id);
-    void (*_Unitree_Send)(struct Unitree_Type *unitree, uint8 *data);
+    void (*_Unitree_Send)(struct Unitree_Type *unitree, uint8_t *data);
     void (*_Unitree_Set_K)(struct Unitree_Type *unitree, uint8_t k_spd, uint8_t k_pos);
 
 } Unitree_Type;
 
-void _Unitree_Init(struct Unitree_Type *unitree, uint8_t id, uint8_t motor_id, uint8_t k_spd, uint8_t k_pos);
+void _Unitree_Init( Unitree_Type *unitree, uint8_t id, uint8_t motor_id, uint8_t k_spd, uint8_t k_pos);
 
-void _Unitree_Set_Id(struct Unitree_Type *unitree, uint8_t id, uint8_t motor_id);
+void _Unitree_Set_Id( Unitree_Type *unitree, uint8_t id, uint8_t motor_id);
 
-void _Unitree_Send(struct Unitree_Type *unitree, uint8 *data);
-void _Unitree_Set_K(struct Unitree_Type *unitree, uint8_t k_spd, uint8_t k_pos);
+void _Unitree_Send(Unitree_Type *unitree, CAN_TypeDef *CANx, uint8_t *sendbuff) ;
+void _Unitree_Set_K( Unitree_Type *unitree, uint8_t k_spd, uint8_t k_pos);
 
 #endif
