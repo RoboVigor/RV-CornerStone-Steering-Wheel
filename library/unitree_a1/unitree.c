@@ -1,11 +1,21 @@
 #include "unitree.h"
 
 void Unitree_Init(Unitree_Type *unitree, CAN_TypeDef *CANx,uint8_t id, uint8_t motor_id, uint8_t k_spd, uint8_t k_pos) {
-	
-	unitree_id_type id_instance;
-	unitree_data_type data_instance;
-	unitree->id_t = &id_instance;
-	unitree->data_t = &data_instance;
+	  
+	unitree->id_t = (unitree_id_type*)malloc(sizeof(unitree_id_type));
+    unitree->data_t = (unitree_data_type*)malloc(sizeof(unitree_data_type));
+
+    // 检查分配是否成功
+    if (!unitree->id_t || !unitree->data_t) {
+        // 处理内存分配失败
+        free(unitree->id_t);
+        free(unitree->data_t);
+        return;
+    }
+
+    // 初始化成员
+    memset(unitree->id_t, 0, sizeof(unitree_id_type));
+    memset(unitree->data_t, 0, sizeof(unitree_data_type));
 	
     unitree->_Unitree_Bind=_Unitree_Bind;
     unitree->_Unitree_Set_Id=_Unitree_Set_Id;
@@ -29,7 +39,9 @@ void _Unitree_Set_Id( Unitree_Type *unitree, uint8_t id, uint8_t motor_id) {
 
 void _Unitree_Send(Unitree_Type *unitree, uint8_t *sendbuff,uint8_t dlc) {
     unitree->id_t->status=Unitree_W;
-    uint16_t id = unitree->id_t->data >>= 3;
+	
+    uint32_t id = unitree->id_t->data;
+	id>>=3;
     Can_Send_Msg(unitree->CANx, id, sendbuff,dlc);
 }
 

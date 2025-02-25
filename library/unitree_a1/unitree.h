@@ -14,12 +14,12 @@ typedef struct {
 
 typedef union {
     struct {
-        uint32_t id : 2;
-        uint32_t status : 3;
-        uint32_t mode : 8;
-        uint32_t motor_id : 4;
-        uint32_t motor_status : 3;
         uint32_t nc : 12;
+        uint32_t motor_status : 3;
+        uint32_t motor_id : 4;
+        uint32_t mode : 8;
+        uint32_t status : 3;
+        uint32_t id : 2;
     };
     uint32_t data;
 } unitree_id_type;
