@@ -1,5 +1,5 @@
-#ifndef __DRIVER_Encoder_H
-#define __DRIVER_Encoder_H
+#ifndef __UNITREE_H
+#define __UNITREE_H
 
 #include "stm32f4xx.h"
 #include "Driver_CAN.h"
@@ -7,8 +7,6 @@
 typedef enum { Unitree_W ,Unitree_R} status_type;
 
 typedef enum { Unitree_Mode1 = 10, Unitree_Send_k, Unitree_Read_k, Unitree_Mode2 } mode_type;
-
-typedef struct Unitree_Type Unitree_Type;
 
 typedef struct {
     DFLT, FOC, CAL
@@ -35,7 +33,7 @@ typedef union {
     uint8_t data[4];
 } unitree_data_type;
 
-typedef struct Unitree_Type{
+typedef struct{
     unitree_id_type   *id_t;
     unitree_data_type *data_t;
 	
