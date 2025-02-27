@@ -65,7 +65,7 @@ int main(void) {
     BSP_Stone_Id_Init(&Board_Id, &Robot_Id);
 
     // USART
-    BSP_USART6_Init(9600, USART_IT_IDLE);
+    BSP_USART6_Init(4000000, USART_IT_IDLE);
     BSP_UART7_Init(115200, USART_IT_IDLE);
     BSP_UART8_Init(115200, USART_IT_IDLE);
 	
@@ -118,16 +118,13 @@ int main(void) {
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
 	
+	;
 	
-	uint8_t sendbuff[8]={0,0,0,0,0,0,0,0};
-	
-	while(1)	Can_Send_Msg(CAN1,0x01,sendbuff,8);
-	
-	Unitree_Init(&Motor_Arm_1,CAN1,1,1,0,0);
+	Unitree_Init(&Motor_Arm_1,USART6,1,10,0);
 	
 	while(1){
-		delay_us(10);
-		Motor_Arm_1._Unitree_Set_K(&Motor_Arm_1,0,0);
+		Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
+		delay_ms(10);
 	}
 	
     /*******************************************************************************
