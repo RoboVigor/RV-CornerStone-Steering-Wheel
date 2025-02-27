@@ -29,6 +29,8 @@ int main(void) {
     Motor_Init(&Motor_LF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RB_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
+	
+	
 
     // 发射机构电机
     Motor_Init(&Motor_Stir, STIR_MOTOR_REDUCTION_RATE, ENABLE, ENABLE); //拨弹
@@ -115,6 +117,18 @@ int main(void) {
 
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
+	
+	
+	uint8_t sendbuff[8]={0,0,0,0,0,0,0,0};
+	
+	while(1)	Can_Send_Msg(CAN1,0x01,sendbuff,8);
+	
+	Unitree_Init(&Motor_Arm_1,CAN1,1,1,0,0);
+	
+	while(1){
+		delay_us(10);
+		Motor_Arm_1._Unitree_Set_K(&Motor_Arm_1,0,0);
+	}
 	
     /*******************************************************************************
      *                                 任务初始化                                   *

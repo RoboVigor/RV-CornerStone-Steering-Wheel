@@ -57,7 +57,7 @@ void BSP_CAN_Init(void) {
     CAN_InitStructure.CAN_BS1 = CAN_BS1_10tq;
     CAN_InitStructure.CAN_BS2 = CAN_BS2_3tq;
 #endif
-    CAN_InitStructure.CAN_Mode      = CAN_Mode_Normal;
+    CAN_InitStructure.CAN_Mode      = CAN_Mode_LoopBack;
     CAN_InitStructure.CAN_NART      = DISABLE;
     CAN_InitStructure.CAN_Prescaler = 3;
     CAN_InitStructure.CAN_RFLM      = DISABLE;
