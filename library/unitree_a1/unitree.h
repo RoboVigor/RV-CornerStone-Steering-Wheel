@@ -4,31 +4,35 @@
 #include "stm32f4xx.h"
 #include "Driver_CAN.h"
 #include "Driver_BSP.h"
+#include "vegmath.h"
 
-#define Unitree_Protocol_Ledgth 17
+#define Unitree_Protocol_Length 17
+#define Unitree_CRC16_Length 2
 
 typedef struct {
     DFLT, FOC, CAL
 } motor_status_type;
 
 typedef union{
+#pragma pack(push, 1)  
 	struct{
-		uint16_t head;
+		uint8_t head[2];//fdee
 		
 		uint8_t id:4;
 		uint8_t status:3;
 		uint8_t nc:1;
 		
-		uint16_t torque;
+		uint16_t  torque;
 		uint16_t velocity;
-		uint16_t angle;
+		uint32_t angle;
 
-		uint8_t  k_spd;
-		uint8_t  k_pos;
+		uint16_t  k_spd;
+		uint16_t  k_pos;
 		
 		uint16_t crc16;
 	};
-	uint8_t data[Unitree_Protocol_Ledgth];
+#pragma pack(pop)       
+	uint8_t data[Unitree_Protocol_Length];
 }Unitree_Data_Type;
 
 
@@ -37,7 +41,7 @@ typedef struct{
 	
 	Unitree_Data_Type Unitree_Data;
 	
-	uint8_t receiveBuf[Unitree_Protocol_Ledgth];
+	uint8_t receiveBuf[Unitree_Protocol_Length];
 	
     void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8_t k_spd, uint8_t k_pos);
     void (*_Unitree_Bind)(struct Unitree_Type *unitree,USART_TypeDef *USARTx);
