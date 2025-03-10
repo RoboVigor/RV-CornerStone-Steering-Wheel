@@ -43,20 +43,22 @@ typedef struct{
 	
 	uint8_t receiveBuf[Unitree_Protocol_Length];
 	
-    void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8_t k_spd, uint8_t k_pos);
+    void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint16_t k_spd, uint16_t k_pos);
     void (*_Unitree_Bind)(struct Unitree_Type *unitree,USART_TypeDef *USARTx);
 
     void (*_Unitree_Send)(struct Unitree_Type *unitree);
-    void (*_Unitree_Set_K)(struct Unitree_Type *unitree, uint8_t k_spd, uint8_t k_pos);
+    void (*_Unitree_Set_K)(struct Unitree_Type *unitree, uint16_t k_spd, uint16_t k_pos);
+	void (*_Unitree_Set_Data)(struct Unitree_Type *unitree, uint16_t torque, uint16_t velocity,uint32_t angle);
 
 } Unitree_Type;
 
-void _Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8_t k_spd, uint8_t k_pos);
+void _Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint16_t k_spd, uint16_t k_pos);
 void _Unitree_Bind(Unitree_Type *unitree,USART_TypeDef *USARTx);
 
 
 void _Unitree_Send(Unitree_Type *unitree) ;
-void _Unitree_Set_K( Unitree_Type *unitree, uint8_t k_spd, uint8_t k_pos);
+void _Unitree_Set_K( Unitree_Type *unitree, uint16_t k_spd, uint16_t k_pos);
+void _Unitree_Set_Data(Unitree_Type *unitree, uint16_t torque, uint16_t velocity,uint32_t angle);
 
 #endif
 
