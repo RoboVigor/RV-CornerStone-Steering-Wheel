@@ -118,14 +118,13 @@ int main(void) {
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
 	
-	;
 	
-	Unitree_Init(&Motor_Arm_1,USART6,1,10,0);
 	
-	while(1){
-		Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
-		delay_ms(10);
-	}
+	Unitree_Init(&Motor_Arm_1,USART6,0,25,100);
+	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0,255,0);
+	
+	Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
+	//while(1);
 	
     /*******************************************************************************
      *                                 任务初始化                                   *
@@ -141,7 +140,7 @@ int main(void) {
     // Can发送任务
     xTaskCreate(Task_Can_Send, "Task_Can_Send", 500, NULL, 5, NULL);
 
-    // 运动控制任务
+    // 运动控制任务v
     //xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
     //xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
     // DMA发送任务

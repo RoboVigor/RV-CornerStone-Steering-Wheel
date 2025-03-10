@@ -15,7 +15,7 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint1
 	
 	unitree->Unitree_Data.id=id;
 	
-	unitree->Unitree_Data.status=5;
+	unitree->Unitree_Data.status=1;
 	
 	if(unitree->USARTx==USART6){
 		BSP_DMA_Init(USART6_Rx, unitree->receiveBuf, Unitree_Protocol_Length);
@@ -35,7 +35,6 @@ void _Unitree_Send(Unitree_Type *unitree) {
 
     DMA_Disable(USART6_Tx);
     DMA_Enable(USART6_Tx, Unitree_Protocol_Length);
-	
 	
 }
 

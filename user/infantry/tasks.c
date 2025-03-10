@@ -72,10 +72,12 @@ void Task_Can_Send(void *Parameters) {
     int        intervalms   = interval * 1000;     // 任务运行间隔 ms
     while (1) {
         Bridge_Send_Motor(&BridgeData, SafetyMode);
-		Encoder_Can_Send(CAN2,0x01,0x01,0x00);
-		Encoder_Can_Send(CAN2,0x02,0x01,0x00);
-		Encoder_Can_Send(CAN2,0x03,0x01,0x00);
-		Encoder_Can_Send(CAN2,0x04,0x01,0x00);
+		//Encoder_Can_Send(CAN2,0x01,0x01,0x00);
+		//Encoder_Can_Send(CAN2,0x02,0x01,0x00);
+		//Encoder_Can_Send(CAN2,0x03,0x01,0x00);
+		//Encoder_Can_Send(CAN2,0x04,0x01,0x00);
+		
+		Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
         //USART_SendData(USART6, 0x01);	
 
 		//DMA_Disable(USART6_Tx);
