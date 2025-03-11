@@ -120,8 +120,8 @@ int main(void) {
 	
 	
 	
-	Unitree_Init(&Motor_Arm_1,USART6,0,25,100);
-	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0,255,0);
+	Unitree_Init(&Motor_Arm_1,USART6,0,1,0.2,0.1);
+	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0,3.14,0);
 	
 	Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
 	//while(1);

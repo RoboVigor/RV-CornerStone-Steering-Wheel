@@ -5,6 +5,7 @@
 #include "Driver_CAN.h"
 #include "Driver_BSP.h"
 #include "vegmath.h"
+#include "macro.h"
 
 #define Unitree_Protocol_Length 17
 #define Unitree_CRC16_Length 2
@@ -39,26 +40,32 @@ typedef union{
 typedef struct{
 	USART_TypeDef *USARTx;
 	
-	Unitree_Data_Type Unitree_Data;
+	float torque;		//(N*m)
+	float velocity;		//(ras/s)
+	float angle;		//(rad)
 	
+	float k_spd;
+	float k_pos;
+	
+	Unitree_Data_Type Unitree_Data;
 	uint8_t receiveBuf[Unitree_Protocol_Length];
 	
-    void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint16_t k_spd, uint16_t k_pos);
+    void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id,  uint8_t status,float k_spd, float k_pos);
     void (*_Unitree_Bind)(struct Unitree_Type *unitree,USART_TypeDef *USARTx);
 
     void (*_Unitree_Send)(struct Unitree_Type *unitree);
-    void (*_Unitree_Set_K)(struct Unitree_Type *unitree, uint16_t k_spd, uint16_t k_pos);
-	void (*_Unitree_Set_Data)(struct Unitree_Type *unitree, uint16_t torque, uint16_t velocity,uint32_t angle);
+    void (*_Unitree_Set_K)(struct Unitree_Type *unitree, float k_spd, float k_pos);
+	void (*_Unitree_Set_Data)(struct Unitree_Type *unitree, float torque, float velocity,float angle);
 
 } Unitree_Type;
 
-void _Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint16_t k_spd, uint16_t k_pos);
+void _Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8_t status, float k_spd, float k_pos);
 void _Unitree_Bind(Unitree_Type *unitree,USART_TypeDef *USARTx);
 
 
 void _Unitree_Send(Unitree_Type *unitree) ;
-void _Unitree_Set_K( Unitree_Type *unitree, uint16_t k_spd, uint16_t k_pos);
-void _Unitree_Set_Data(Unitree_Type *unitree, uint16_t torque, uint16_t velocity,uint32_t angle);
+void _Unitree_Set_K( Unitree_Type *unitree, float k_spd, float k_pos);
+void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float angle);
 
 #endif
 
