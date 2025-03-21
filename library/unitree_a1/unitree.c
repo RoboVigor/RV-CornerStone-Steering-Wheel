@@ -6,6 +6,7 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8
     unitree->_Unitree_Send=_Unitree_Send;
     unitree->_Unitree_Set_K=_Unitree_Set_K;
 	unitree->_Unitree_Set_Data=_Unitree_Set_Data;
+	unitree->_Unitree_Receive=_Unitree_Receive;
 
     unitree->_Unitree_Bind(unitree,USARTx);
     unitree->_Unitree_Set_K(unitree, k_spd, k_pos); 
@@ -26,7 +27,6 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8
 void _Unitree_Bind(Unitree_Type *unitree,USART_TypeDef *USARTx){
     unitree->USARTx=USARTx;
 }
-
 
 void _Unitree_Send(Unitree_Type *unitree) {
 
@@ -62,6 +62,28 @@ void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float
 	unitree->velocity=velocity;
 	unitree->angle=angle;
 
+
+}              
+
+void _Unitree_Receive(Unitree_Type *unitree) {
+	uint16_t tmp;
+	int16_t t,v;
+	int32_t a;
+
+    // clear IDLE flag
+    tmp = unitree->USARTx->DR;
+    tmp = unitree->USARTx->SR;
+
+	DMA_Disable(USART6_Rx);
+	
+	t=unitree->receiveBuf[3]|unitree->receiveBuf[4]<<8;
+	unitree->torque_r=t/256;
+	v=unitree->receiveBuf[5]|unitree->receiveBuf[6]<<8;
+	unitree->velocity_r=v/256*6.28;
+	a=unitree->receiveBuf[7]|unitree->receiveBuf[8]<<8|unitree->receiveBuf[9]<<16|unitree->receiveBuf[10]<<24;
+	unitree->angle_r=a/32768.0*6.28;
+
+    DMA_Enable(USART6_Rx, Unitree_Protocol_Length);
 
 }
 
