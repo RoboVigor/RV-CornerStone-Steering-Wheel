@@ -35,12 +35,12 @@ void _Unitree_Send(Unitree_Type *unitree) {
 	MIAO(unitree->torque,-127.99f, 127.99f);
 	MIAO(unitree->velocity,-804.00f, 804.00f);
 	MIAO(unitree->angle,-411774.0f, 411774.0f);
-
-    unitree->Unitree_Data.k_pos=unitree->k_pos/ 25.6f * 32768.0f;
-    unitree->Unitree_Data.k_spd=unitree->k_spd/ 25.6f * 32768.0f;
+	
+    unitree->Unitree_Data.k_pos=unitree->k_pos*1280;
+    unitree->Unitree_Data.k_spd=unitree->k_spd	*1280;
     unitree->Unitree_Data.torque=unitree->torque* 256.0f;
     unitree->Unitree_Data.velocity=unitree->velocity/ 6.28318f * 256.0f;
-    unitree->Unitree_Data.angle=unitree->angle/ 6.28318f * 256.0f;	
+    unitree->Unitree_Data.angle=unitree->angle/ 6.28318f * 32768.0f*6.33;	
 	
     uint16_t dataCRC16= Get_CRC16_Check_Sum(&unitree->Unitree_Data, Unitree_Protocol_Length-Unitree_CRC16_Length);
 	

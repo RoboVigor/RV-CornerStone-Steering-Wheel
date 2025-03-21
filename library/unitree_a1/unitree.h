@@ -47,6 +47,10 @@ typedef struct{
 	float k_spd;
 	float k_pos;
 	
+	float torque_r;
+	float velocity_r;
+	float angle_r;
+	
 	Unitree_Data_Type Unitree_Data;
 	uint8_t receiveBuf[Unitree_Protocol_Length];
 	
