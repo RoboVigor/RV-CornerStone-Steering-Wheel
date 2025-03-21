@@ -53,7 +53,7 @@ typedef struct{
 	float angle_r;
 	
 	Unitree_Data_Type Unitree_Data;
-	uint8_t receiveBuf[Unitree_Protocol_Send_Length];
+	uint8_t receiveBuf[Unitree_Protocol_Receive_Length];
 	
     void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id,  uint8_t status,float k_spd, float k_pos);
     void (*_Unitree_Bind)(struct Unitree_Type *unitree,USART_TypeDef *USARTx);
@@ -63,6 +63,7 @@ typedef struct{
 	void (*_Unitree_Set_Data)(struct Unitree_Type *unitree, float torque, float velocity,float angle);
 
 	void (*_Unitree_Receive)(struct Unitree_Type *unitree);
+	void (*_Unitree_Unpack)(struct Unitree_Type *unitree);
 
 } Unitree_Type;
 
@@ -74,6 +75,7 @@ void _Unitree_Set_K( Unitree_Type *unitree, float k_spd, float k_pos);
 void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float angle);
 
 void _Unitree_Receive(Unitree_Type *unitree);
+void _Unitree_Unpack(Unitree_Type *unitree);
 
 #endif
 

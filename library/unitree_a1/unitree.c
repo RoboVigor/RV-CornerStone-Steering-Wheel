@@ -7,6 +7,7 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8
     unitree->_Unitree_Set_K=_Unitree_Set_K;
 	unitree->_Unitree_Set_Data=_Unitree_Set_Data;
 	unitree->_Unitree_Receive=_Unitree_Receive;
+	unitree->_Unitree_Unpack=_Unitree_Unpack;
 
     unitree->_Unitree_Bind(unitree,USARTx);
     unitree->_Unitree_Set_K(unitree, k_spd, k_pos); 
@@ -19,7 +20,7 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8
 	unitree->Unitree_Data.status=status;
 	
 	if(unitree->USARTx==USART6){
-		BSP_DMA_Init(USART6_Rx, unitree->receiveBuf, Unitree_Protocol_Send_Length);
+		BSP_DMA_Init(USART6_Rx, unitree->receiveBuf, Unitree_Protocol_Receive_Length);
 		BSP_DMA_Init(USART6_Tx, &unitree->Unitree_Data, Unitree_Protocol_Send_Length);
 	}
 }
@@ -68,8 +69,6 @@ void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float
 
 void _Unitree_Receive(Unitree_Type *unitree) {
 	uint16_t tmp;
-	int16_t t,v;
-	int32_t a;
 
     // clear IDLE flag
     tmp = unitree->USARTx->DR;
@@ -77,18 +76,9 @@ void _Unitree_Receive(Unitree_Type *unitree) {
 
 	DMA_Disable(USART6_Rx);
 
+	unitree->_Unitree_Unpack(unitree);
 
-	
-	if(Verify_CRC16_Check_Sum())
-
-	t=unitree->receiveBuf[3]|unitree->receiveBuf[4]<<8;
-	unitree->torque_r=t/256;
-	v=unitree->receiveBuf[5]|unitree->receiveBuf[6]<<8;
-	unitree->velocity_r=v/256*6.28;
-	a=unitree->receiveBuf[7]|unitree->receiveBuf[8]<<8|unitree->receiveBuf[9]<<16|unitree->receiveBuf[10]<<24;
-	unitree->angle_r=a/32768.0*6.28;
-
-    DMA_Enable(USART6_Rx, Unitree_Protocol_Send_Length);
+    DMA_Enable(USART6_Rx, Unitree_Protocol_Receive_Length);
 
 }
 
@@ -96,14 +86,14 @@ void _Unitree_Unpack(Unitree_Type *unitree) {
 	int16_t t,v;
 	int32_t a;
 	uint16_t CRC_16;
-	bool CRC_16_Check_Sum_State;
+	unsigned int CRC_16_Check_Sum_State;
 
 	CRC_16=unitree->receiveBuf[14]|unitree->receiveBuf[15]<<8;
 
-	CRC_16_Check_Sum_State=Verify_CRC16_Check_Sum(unitree->receiveBuf,Unitree_CRC16_Length)
+	CRC_16_Check_Sum_State=Verify_CRC16_Check_Sum(unitree->receiveBuf,Unitree_Protocol_Receive_Length);
 
 	if(!CRC_16_Check_Sum_State)
-		continue;
+		return;
 
 	t=unitree->receiveBuf[3]|unitree->receiveBuf[4]<<8;
 	unitree->torque_r=t/256;
