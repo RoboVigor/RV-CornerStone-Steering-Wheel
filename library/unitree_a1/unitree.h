@@ -7,7 +7,8 @@
 #include "vegmath.h"
 #include "macro.h"
 
-#define Unitree_Protocol_Length 17
+#define Unitree_Protocol_Send_Length 17
+#define Unitree_Protocol_Receive_Length 16
 #define Unitree_CRC16_Length 2
 
 typedef struct {
@@ -33,7 +34,7 @@ typedef union{
 		uint16_t crc16;
 	};
 #pragma pack(pop)       
-	uint8_t data[Unitree_Protocol_Length];
+	uint8_t data[Unitree_Protocol_Send_Length];
 }Unitree_Data_Type;
 
 
@@ -52,7 +53,7 @@ typedef struct{
 	float angle_r;
 	
 	Unitree_Data_Type Unitree_Data;
-	uint8_t receiveBuf[Unitree_Protocol_Length];
+	uint8_t receiveBuf[Unitree_Protocol_Send_Length];
 	
     void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id,  uint8_t status,float k_spd, float k_pos);
     void (*_Unitree_Bind)(struct Unitree_Type *unitree,USART_TypeDef *USARTx);

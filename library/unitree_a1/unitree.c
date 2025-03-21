@@ -19,8 +19,8 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8
 	unitree->Unitree_Data.status=status;
 	
 	if(unitree->USARTx==USART6){
-		BSP_DMA_Init(USART6_Rx, unitree->receiveBuf, Unitree_Protocol_Length);
-		BSP_DMA_Init(USART6_Tx, &unitree->Unitree_Data, Unitree_Protocol_Length);
+		BSP_DMA_Init(USART6_Rx, unitree->receiveBuf, Unitree_Protocol_Send_Length);
+		BSP_DMA_Init(USART6_Tx, &unitree->Unitree_Data, Unitree_Protocol_Send_Length);
 	}
 }
 
@@ -29,6 +29,7 @@ void _Unitree_Bind(Unitree_Type *unitree,USART_TypeDef *USARTx){
 }
 
 void _Unitree_Send(Unitree_Type *unitree) {
+	uint16_t dataCRC_16;
 
 	MIAO(unitree->k_pos,0.0f, 25.599f);
 	MIAO(unitree->k_spd,0.0f, 25.599f);
@@ -42,12 +43,12 @@ void _Unitree_Send(Unitree_Type *unitree) {
     unitree->Unitree_Data.velocity=unitree->velocity/ 6.28318f * 256.0f;
     unitree->Unitree_Data.angle=unitree->angle/ 6.28318f * 32768.0f*6.33;	
 	
-    uint16_t dataCRC16= Get_CRC16_Check_Sum(&unitree->Unitree_Data, Unitree_Protocol_Length-Unitree_CRC16_Length);
+    dataCRC_16= Get_CRC16_Check_Sum(&unitree->Unitree_Data, Unitree_Protocol_Send_Length-Unitree_CRC16_Length);
 	
-	unitree->Unitree_Data.crc16=dataCRC16;
+	unitree->Unitree_Data.crc16=dataCRC_16;
 
     DMA_Disable(USART6_Tx);
-    DMA_Enable(USART6_Tx, Unitree_Protocol_Length);
+    DMA_Enable(USART6_Tx, Unitree_Protocol_Send_Length);
 	
 }
 
@@ -75,7 +76,11 @@ void _Unitree_Receive(Unitree_Type *unitree) {
     tmp = unitree->USARTx->SR;
 
 	DMA_Disable(USART6_Rx);
+
+
 	
+	if(Verify_CRC16_Check_Sum())
+
 	t=unitree->receiveBuf[3]|unitree->receiveBuf[4]<<8;
 	unitree->torque_r=t/256;
 	v=unitree->receiveBuf[5]|unitree->receiveBuf[6]<<8;
@@ -83,7 +88,29 @@ void _Unitree_Receive(Unitree_Type *unitree) {
 	a=unitree->receiveBuf[7]|unitree->receiveBuf[8]<<8|unitree->receiveBuf[9]<<16|unitree->receiveBuf[10]<<24;
 	unitree->angle_r=a/32768.0*6.28;
 
-    DMA_Enable(USART6_Rx, Unitree_Protocol_Length);
+    DMA_Enable(USART6_Rx, Unitree_Protocol_Send_Length);
+
+}
+
+void _Unitree_Unpack(Unitree_Type *unitree) {
+	int16_t t,v;
+	int32_t a;
+	uint16_t CRC_16;
+	bool CRC_16_Check_Sum_State;
+
+	CRC_16=unitree->receiveBuf[14]|unitree->receiveBuf[15]<<8;
+
+	CRC_16_Check_Sum_State=Verify_CRC16_Check_Sum(unitree->receiveBuf,Unitree_CRC16_Length)
+
+	if(!CRC_16_Check_Sum_State)
+		continue;
+
+	t=unitree->receiveBuf[3]|unitree->receiveBuf[4]<<8;
+	unitree->torque_r=t/256;
+	v=unitree->receiveBuf[5]|unitree->receiveBuf[6]<<8;
+	unitree->velocity_r=v/256*6.28;
+	a=unitree->receiveBuf[7]|unitree->receiveBuf[8]<<8|unitree->receiveBuf[9]<<16|unitree->receiveBuf[10]<<24;
+	unitree->angle_r=a/32768.0*6.28;
 
 }
 
