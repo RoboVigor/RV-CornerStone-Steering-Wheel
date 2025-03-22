@@ -100,7 +100,7 @@ void _Unitree_Unpack(Unitree_Type *unitree) {
 	v=unitree->receiveBuf[5]|unitree->receiveBuf[6]<<8;
 	unitree->velocity_r=v/256*6.28;
 	a=unitree->receiveBuf[7]|unitree->receiveBuf[8]<<8|unitree->receiveBuf[9]<<16|unitree->receiveBuf[10]<<24;
-	unitree->angle_r=a/32768.0*6.28;
+	unitree->angle_r=a/32768.0*6.28/6.33;
 
 }
 

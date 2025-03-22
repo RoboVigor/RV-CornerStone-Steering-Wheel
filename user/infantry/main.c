@@ -68,7 +68,7 @@ int main(void) {
     BSP_USART6_Init(4000000, USART_IT_IDLE);
     BSP_UART7_Init(115200, USART_IT_IDLE);
     BSP_UART8_Init(115200, USART_IT_IDLE);
-	
+
 
     // Servo
     BSP_PWM_Set_Port(&PWM_Magazine_Servo, PWM_PH10);
@@ -120,8 +120,9 @@ int main(void) {
 	
 	
 	
-	Unitree_Init(&Motor_Arm_1,USART6,0,1,0.2,0.1);
-	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0,3.14,0);
+	Unitree_Init(&Motor_Arm_1,USART6,0,1,0.0f,0.0f);
+    delay_ms(500);
+	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0.0f,0.0f,0.0f);
 	
 	Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
 	//while(1);
@@ -142,7 +143,7 @@ int main(void) {
 
     // 运动控制任务v
     //xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
-    //xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
+    xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
     // DMA发送任务
     //xTaskCreate(Task_Startup_Music, "Task_Startup_Music", 500, NULL, 6, NULL);
 

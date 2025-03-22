@@ -82,7 +82,7 @@ __HANDLE_EXT DebugData_Type DebugData;
 __HANDLE_EXT ChassisData_Type ChassisData;
 __HANDLE_EXT PID_Type         PID_LFCM, PID_LBCM, PID_RBCM, PID_RFCM, PID_YawAngle, PID_YawSpeed;
 __HANDLE_EXT PID_Type         PID_LFORI_CM, PID_LBORI_CM, PID_RBORI_CM, PID_RFORI_CM;
-__HANDLE_EXT PID_Type         PID_ArmAngle,PID_ArmSpeed;
+__HANDLE_EXT PID_Type         PID_ArmAngle,PID_ArmSpeed,PID_Arm1_CM;
 __HANDLE_EXT uint8_t          PigeonCurrent, PigeonVoltage, PigeonEnergy, PigeonChargeEnable;
 
 __HANDLE_EXT Encoder_Type Encoder_LF, Encoder_RF, Encoder_RB, Encoder_LB;

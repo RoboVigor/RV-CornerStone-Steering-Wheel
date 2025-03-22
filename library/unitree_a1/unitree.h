@@ -24,9 +24,9 @@ typedef union{
 		uint8_t status:3;
 		uint8_t nc:1;
 		
-		uint16_t  torque;
-		uint16_t velocity;
-		uint32_t angle;
+		int16_t  torque;
+		int16_t velocity;
+		int32_t angle;
 
 		uint16_t  k_spd;
 		uint16_t  k_pos;
