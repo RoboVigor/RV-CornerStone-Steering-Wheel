@@ -98,7 +98,7 @@ void Task_Arm(void *Parameters) {
     float armAngleTargetControl     = 0;
     
     PID_Init(&PID_ArmAngle, 60, 0, 0, 16000, 10);
-	PID_Init(&PID_Arm1_CM,1,0,0,100,10);
+	PID_Init(&PID_Arm1_CM,3.0,0.003,6.0,100,3);
 	
 	while(1){
 		if(BumperEnabled){
@@ -108,14 +108,14 @@ void Task_Arm(void *Parameters) {
             Bumper_OFF();
 
         //armAngleTargetControl += remoteData.ry / 660.0f * 360 * interval;
-		armAngleTargetControl+=remoteData.ry /180*6.28* interval;
+		armAngleTargetControl=remoteData.ry /660.0f*6.33/4;
 		
         PID_Calculate(&PID_ArmAngle, armAngleTargetControl, Motor_Arm.angle);
-        //PID_Calculate(&PID_Arm1_CM, armAngleTargetControl, Motor_Arm_1.angle_r);
+        PID_Calculate(&PID_Arm1_CM, armAngleTargetControl, Motor_Arm_1.angle_r);
 
         Motor_Arm.input=-PID_ArmAngle.output;
 		//Motor_Arm_1.=armAngleTargetControl/180*6.28/5;
-		Motor_Arm_1.torque=remoteData.ry/1000.0f;
+		Motor_Arm_1.torque=PID_Arm1_CM.output;
 
         vTaskDelayUntil(&LastWakeTime, intervalms);
     }
