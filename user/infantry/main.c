@@ -29,6 +29,8 @@ int main(void) {
     Motor_Init(&Motor_LF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RB_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
+	
+	
 
     // 发射机构电机
     Motor_Init(&Motor_Stir, STIR_MOTOR_REDUCTION_RATE, ENABLE, ENABLE); //拨弹
@@ -63,10 +65,10 @@ int main(void) {
     BSP_Stone_Id_Init(&Board_Id, &Robot_Id);
 
     // USART
-    BSP_USART6_Init(9600, USART_IT_IDLE);
+    BSP_USART6_Init(4000000, USART_IT_IDLE);
     BSP_UART7_Init(115200, USART_IT_IDLE);
     BSP_UART8_Init(115200, USART_IT_IDLE);
-	
+
 
     // Servo
     BSP_PWM_Set_Port(&PWM_Magazine_Servo, PWM_PH10);
@@ -116,6 +118,15 @@ int main(void) {
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
 	
+	
+	
+	Unitree_Init(&Motor_Arm_1,USART6,0,1,0.0f,0.0f);
+    delay_ms(500);
+	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0.0f,0.0f,0.0f);
+	
+	Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
+	//while(1);
+	
     /*******************************************************************************
      *                                 任务初始化                                   *
      *******************************************************************************/
@@ -130,9 +141,9 @@ int main(void) {
     // Can发送任务
     xTaskCreate(Task_Can_Send, "Task_Can_Send", 500, NULL, 5, NULL);
 
-    // 运动控制任务
+    // 运动控制任务v
     //xTaskCreate(Task_Chassis, "Task_Chassis", 400, NULL, 5, NULL);
-    //xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
+    xTaskCreate(Task_Arm, "Task_Arm", 400, NULL, 6, NULL);
     // DMA发送任务
     //xTaskCreate(Task_Startup_Music, "Task_Startup_Music", 500, NULL, 6, NULL);
 
