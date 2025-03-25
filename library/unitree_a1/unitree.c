@@ -11,6 +11,7 @@ void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8
 
     unitree->_Unitree_Bind(unitree,USARTx);
     unitree->_Unitree_Set_K(unitree, k_spd, k_pos); 
+	unitree->_Unitree_Set_Data(unitree, 0, 0, 0);
 	
 	unitree->Unitree_Data.head[0]=0xfe;
 	unitree->Unitree_Data.head[1]=0xee;

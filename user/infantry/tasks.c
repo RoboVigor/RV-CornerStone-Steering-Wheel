@@ -77,7 +77,7 @@ void Task_Can_Send(void *Parameters) {
 		//Encoder_Can_Send(CAN2,0x03,0x01,0x00);
 		//Encoder_Can_Send(CAN2,0x04,0x01,0x00);
 		
-		Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
+		Motor_Joint2._Unitree_Send(&Motor_Arm_1);
         //USART_SendData(USART6, 0x01);	
 
 		//DMA_Disable(USART6_Tx);
@@ -111,11 +111,11 @@ void Task_Arm(void *Parameters) {
 		armAngleTargetControl=remoteData.ry /660.0f*6.33/4;
 		
         PID_Calculate(&PID_ArmAngle, armAngleTargetControl, Motor_Arm.angle);
-        PID_Calculate(&PID_Arm1_CM, armAngleTargetControl, Motor_Arm_1.angle_r);
+        PID_Calculate(&PID_Arm1_CM, armAngleTargetControl, Motor_Joint2.angle_r);
 
         Motor_Arm.input=-PID_ArmAngle.output;
 		//Motor_Arm_1.=armAngleTargetControl/180*6.28/5;
-		Motor_Arm_1.torque=PID_Arm1_CM.output;
+		Motor_Joint2.torque=PID_Arm1_CM.output;
 
         vTaskDelayUntil(&LastWakeTime, intervalms);
     }

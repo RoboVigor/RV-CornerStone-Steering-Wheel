@@ -29,6 +29,9 @@ int main(void) {
     Motor_Init(&Motor_LF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RF_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
     Motor_Init(&Motor_RB_Ori, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);
+    
+	Unitree_Init(&Motor_Joint2,USART6,0,1,0.0f,0.0f);
+	Unitree_Init(&Motor_Joint3,USART6,1,1,0.0f,0.0f);
 	
 	
 
@@ -120,11 +123,6 @@ int main(void) {
 	
 	
 	
-	Unitree_Init(&Motor_Arm_1,USART6,0,1,0.0f,0.0f);
-    delay_ms(500);
-	Motor_Arm_1._Unitree_Set_Data(&Motor_Arm_1,0.0f,0.0f,0.0f);
-	
-	Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
 	//while(1);
 	
     /*******************************************************************************
