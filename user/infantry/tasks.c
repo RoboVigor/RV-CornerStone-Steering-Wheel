@@ -77,7 +77,7 @@ void Task_Can_Send(void *Parameters) {
 		//Encoder_Can_Send(CAN2,0x03,0x01,0x00);
 		//Encoder_Can_Send(CAN2,0x04,0x01,0x00);
 		
-		Motor_Joint2._Unitree_Send(&Motor_Arm_1);
+		Motor_Joint2._Unitree_Send(&Motor_Joint2);
         //USART_SendData(USART6, 0x01);	
 
 		//DMA_Disable(USART6_Tx);
@@ -98,7 +98,7 @@ void Task_Arm(void *Parameters) {
     float armAngleTargetControl     = 0;
     
     PID_Init(&PID_ArmAngle, 60, 0, 0, 16000, 10);
-	PID_Init(&PID_Arm1_CM,3.0,0.003,6.0,100,3);
+	PID_Init(&PID_Joint1_CM,3.0,0.003,6.0,100,3);
 	
 	while(1){
 		if(BumperEnabled){
@@ -111,11 +111,11 @@ void Task_Arm(void *Parameters) {
 		armAngleTargetControl=remoteData.ry /660.0f*6.33/4;
 		
         PID_Calculate(&PID_ArmAngle, armAngleTargetControl, Motor_Arm.angle);
-        PID_Calculate(&PID_Arm1_CM, armAngleTargetControl, Motor_Joint2.angle_r);
+        PID_Calculate(&PID_Joint1_CM, armAngleTargetControl, Motor_Joint2.angle_r);
 
         Motor_Arm.input=-PID_ArmAngle.output;
 		//Motor_Arm_1.=armAngleTargetControl/180*6.28/5;
-		Motor_Joint2.torque=PID_Arm1_CM.output;
+		Motor_Joint2.torque=PID_Joint1_CM.output;
 
         vTaskDelayUntil(&LastWakeTime, intervalms);
     }

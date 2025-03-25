@@ -48,7 +48,7 @@ void USART3_IRQHandler(void) {
  */
 void USART6_IRQHandler(void) {
     //    Bridge_Receive_USART(&BridgeData, USART_BRIDGE, 6);
-    Motor_Arm_1._Unitree_Receive(&Motor_Arm_1);
+    Motor_Joint2._Unitree_Receive(&Motor_Joint2);
 }
 
 /**

@@ -33,7 +33,7 @@ typedef union{
 		
 		uint16_t crc16;
 	};
-#pragma pack(pop)       
+#pragma pack(pop)
 	uint8_t data[Unitree_Protocol_Send_Length];
 }Unitree_Data_Type;
 
@@ -51,6 +51,9 @@ typedef struct{
 	float torque_r;
 	float velocity_r;
 	float angle_r;
+
+	float angleBias;
+	float angleCalibrated;
 	
 	Unitree_Data_Type Unitree_Data;
 	uint8_t receiveBuf[Unitree_Protocol_Receive_Length];
