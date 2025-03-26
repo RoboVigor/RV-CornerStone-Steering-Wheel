@@ -27,10 +27,10 @@ void Chassis_Update(ChassisData_Type *cd, float vx, float vy, float vw) {
 	cd->rotorVx[1]=cd->vx+cd->vw;cd->rotorVy[1]=cd->vy+cd->vw;
 	cd->rotorVx[2]=cd->vx+cd->vw;cd->rotorVy[2]=cd->vy-cd->vw;
 	cd->rotorVx[3]=cd->vx-cd->vw;cd->rotorVy[3]=cd->vy-cd->vw;
-    cd->encoderAngle[0]=Encoder_LB.angle;
-    cd->encoderAngle[1]=Encoder_LF.angle;
-    cd->encoderAngle[2]=Encoder_RF.angle;
-    cd->encoderAngle[3]=Encoder_RB.angle;
+    cd->encoderAngle[0]=Motor_LB_Ori.angle;
+    cd->encoderAngle[1]=Motor_LF_Ori.angle;
+    cd->encoderAngle[2]=Motor_RF_Ori.angle;
+    cd->encoderAngle[3]=Motor_RB_Ori.angle;
 }
 
 void Chassis_Fix(ChassisData_Type *cd, float angle) {
@@ -52,7 +52,8 @@ void Chassis_Calculate_Rotor_Speed(ChassisData_Type *cd) {
     */
 	int i;
 	for(i=0;i<4;i++)
-		cd->rotorSpeed[i] = coefficient * sqrt(cd->rotorVy[i] * cd->rotorVy[i] + cd->rotorVx[i] * cd->rotorVx[i]);
+		if(ABS(cd->rotorVy[i])>0||ABS(cd->rotorVx[i])>0)
+			cd->rotorSpeed[i] = coefficient * sqrt(cd->rotorVy[i] * cd->rotorVy[i] + cd->rotorVx[i] * cd->rotorVx[i]);
 }
 
 void Chassis_Calculate_Rotor_Angle(ChassisData_Type *cd) {
@@ -65,12 +66,20 @@ void Chassis_Calculate_Rotor_Angle(ChassisData_Type *cd) {
 	for(i=0;i<4;i++){
         //cd->rotorAngle[i] = cd->encoderAngle[i];
 		if(ABS(cd->rotorVy[i])>0||ABS(cd->rotorVx[i])>0){
+			/*
 			cd->rotorAngle[i] = coefficient * atan2(cd->rotorVy[i] , cd->rotorVx[i]);
 
 			if (cd->vy < 0) cd->rotorAngle[i] = cd->rotorAngle[i]+360;
+			*/
+			cd->rotorAngle[i] = 180-coefficient * atan2(cd->rotorVy[i] , cd->rotorVx[i]);
+			
+			int round=cd->encoderAngle[i]/360-(cd->encoderAngle[i]<0 ? 1:0);
+			cd->rotorAngle[i]+=360*round;
+			
+			if(ABS(cd->encoderAngle[i]-cd->rotorAngle[i])>180) 
+				cd->rotorAngle[i]+=(cd->rotorAngle[i]>cd->encoderAngle[i] ? -1:1)*360;
 		}
-        if(ABS(cd->encoderAngle[i]-cd->rotorAngle[i])>180) 
-            cd->rotorAngle[i]+=(cd->rotorAngle[i]>cd->encoderAngle[i] ? -1:1)*360;
+		
 		/*
         cd->state[i]=1;
         if(ABS(cd->encoderAngle[i]-cd->rotorAngle[i])>90){

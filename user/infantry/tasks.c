@@ -162,10 +162,10 @@ void Task_Chassis(void *Parameters) {
     PID_Init(&PID_LBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RFCM, 20, 0, 0, 10000, 1200);
-    PID_Init(&PID_LFORI_CM, 200, 0, 1000, 5000, 0);
-    PID_Init(&PID_LBORI_CM, 200, 0, 1000, 5000, 0);
-    PID_Init(&PID_RBORI_CM, 200, 0, 1000, 5000, 0);
-    PID_Init(&PID_RFORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_LFORI_CM, 300, 0, 500, 15000, 0);
+    PID_Init(&PID_LBORI_CM, 300, 0, 500, 15000, 0);
+    PID_Init(&PID_RBORI_CM, 300, 0, 500, 15000, 0);
+    PID_Init(&PID_RFORI_CM, 300, 0, 500, 15000, 0);
 
     // 初始化底盘
     Chassis_Init(&ChassisData);
@@ -299,6 +299,7 @@ void Task_Chassis(void *Parameters) {
         // 底盘跟随云台
         //vw = ABS(PID_Follow_Angle.error) < followDeadRegion ? 0 : (-1 * PID_Follow_Speed.output * DPS2RPS);
 		vw=remoteData.rx / 660.0f*90;
+		
 
         // Host control
         vx += HostChassisData.vx;
@@ -347,15 +348,18 @@ void Task_Chassis(void *Parameters) {
         PID_Calculate(&PID_LFCM, ChassisData.rotorSpeed[1], Motor_LF.speed * RPM2RPS);
         PID_Calculate(&PID_RFCM, ChassisData.rotorSpeed[2], Motor_RF.speed * RPM2RPS);
         PID_Calculate(&PID_RBCM, ChassisData.rotorSpeed[3], Motor_RB.speed * RPM2RPS);
-        PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[0], Encoder_LB.angle);
-        PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[1], Encoder_LF.angle);
-        PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[2], Encoder_RF.angle);
-        PID_Calculate(&PID_RBORI_CM, ChassisData.rotorAngle[3], Encoder_RB.angle);
+        PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[0], Motor_LB_Ori.angle);
+        PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[1], Motor_LF_Ori.angle);
+        PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[2], Motor_RF_Ori.angle);
+        PID_Calculate(&PID_RBORI_CM, ChassisData.rotorAngle[3], Motor_RB_Ori.angle);
 
         // 输出电流值到电调
         Motor_LF.input = PID_LFCM.output * ChassisData.powerScale;
         Motor_LB.input = PID_LBCM.output * ChassisData.powerScale;
+        //Motor_LF.input = 1000;
         //Motor_LB.input = 1000;
+//        Motor_RB.input = 1000;
+//        Motor_RF.input = 1000;
         Motor_RB.input     = PID_RBCM.output * ChassisData.powerScale;
         Motor_RF.input     = PID_RFCM.output * ChassisData.powerScale;
         
@@ -363,7 +367,10 @@ void Task_Chassis(void *Parameters) {
 		Motor_LF_Ori.input = PID_LFORI_CM.output;
 		Motor_RF_Ori.input = PID_RFORI_CM.output;
 		Motor_RB_Ori.input = PID_RBORI_CM.output;
-		//Motor_LB_Ori.input = 1000;
+//		Motor_LB_Ori.input = 3000;
+//		Motor_LF_Ori.input = 3000;
+//		Motor_RF_Ori.input = 3000;
+//		Motor_RB_Ori.input = 3000;
 
         // 调试信息
         // DebugData.debug1 = vx * 1000;

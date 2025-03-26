@@ -85,8 +85,6 @@ __HANDLE_EXT PID_Type         PID_LFORI_CM, PID_LBORI_CM, PID_RBORI_CM, PID_RFOR
 __HANDLE_EXT PID_Type         PID_ArmAngle,PID_ArmSpeed,PID_Joint1_CM;
 __HANDLE_EXT uint8_t          PigeonCurrent, PigeonVoltage, PigeonEnergy, PigeonChargeEnable;
 
-__HANDLE_EXT Encoder_Type Encoder_LF, Encoder_RF, Encoder_RB, Encoder_LB;
-
 // 通讯协议
 __HANDLE_EXT ProtocolData_Type ProtocolData;
 __HANDLE_EXT Node_Type         Node_Judge, Node_Host, Node_Board,Node_Motor;
