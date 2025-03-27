@@ -59,6 +59,7 @@ __HANDLE_EXT Motor_Type Motor_LF, Motor_RF, Motor_RB, Motor_LB, Motor_LAJI;
 __HANDLE_EXT Motor_Type Motor_LF_Ori, Motor_RF_Ori, Motor_RB_Ori, Motor_LB_Ori;
 __HANDLE_EXT Motor_Type Motor_Arm;
 __HANDLE_EXT Unitree_Type Motor_Joint2,Motor_Joint3;
+__HANDLE_EXT Unitree_Data_Type Unitree_Bridege;
 
 // 云台
 __HANDLE_EXT Motor_Type Motor_Yaw, Motor_Pitch;

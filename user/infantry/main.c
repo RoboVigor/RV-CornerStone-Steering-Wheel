@@ -113,9 +113,10 @@ int main(void) {
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
 	
+	_Unitree_Bind(&Unitree_Bridege,USART6);
 	
-	Unitree_Init(&Motor_Joint2,USART6,0,1,0.0f,0.0f);
-	//Unitree_Init(&Motor_Joint3,USART6,1,1,0.0f,0.0f);
+	Unitree_Init(&Motor_Joint2,&Unitree_Bridege,0,1,0.0f,0.0f);
+	Unitree_Init(&Motor_Joint3,&Unitree_Bridege,1,1,0.0f,0.0f);
 	
 	//while(1);
 	
