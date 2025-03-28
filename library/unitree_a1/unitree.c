@@ -1,6 +1,6 @@
 #include "unitree.h"
 
-void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type bridge,uint8_t id, uint8_t status,float k_spd, float k_pos) {
+void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos) {
     unitree->_Unitree_Send=_Unitree_Send;
     unitree->_Unitree_Set_K=_Unitree_Set_K;
 	unitree->_Unitree_Set_Data=_Unitree_Set_Data;
@@ -9,7 +9,7 @@ void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type bridge,uint8_t id, u
     unitree->_Unitree_Set_K(unitree, k_spd, k_pos); 
 	unitree->_Unitree_Set_Data(unitree, 0, 0, 0);
 	
-	unitree->Unitree_Data=&bridge.data_t;
+	unitree->Unitree_Data=&bridge->data_t;
 	
 	unitree->Unitree_Data->head[0]=0xfe;
 	unitree->Unitree_Data->head[1]=0xee;
@@ -20,13 +20,14 @@ void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type bridge,uint8_t id, u
 	
 }
 
-void _Unitree_Bind(Unitree_Bridge_Type bridge,USART_TypeDef *USARTx){
-	bridge.USARTx=USARTx;
+void _Unitree_Bind(Unitree_Bridge_Type *bridge,USART_TypeDef *USARTx){
+	bridge->USARTx=USARTx;
 
 	if(USARTx==USART6){
-		BSP_DMA_Init(USART6_Rx, bridge.receiveBuf, Unitree_Protocol_Receive_Length);
-		BSP_DMA_Init(USART6_Tx, &bridge.data_t, Unitree_Protocol_Send_Length);
+		BSP_DMA_Init(USART6_Rx, bridge->receiveBuf, Unitree_Protocol_Receive_Length);
+		BSP_DMA_Init(USART6_Tx, &bridge->data_t, Unitree_Protocol_Send_Length);
 	}
+	
 }
 
 void _Unitree_Send(Unitree_Type *unitree) {
@@ -63,7 +64,7 @@ void _Unitree_Send(Unitree_Type *unitree) {
 void _Unitree_Set_K( Unitree_Type *unitree, float k_spd, float k_pos){
     unitree->k_spd = k_spd;
     unitree->k_pos = k_pos;
-
+										
 }
 
 void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float angle){
@@ -75,23 +76,23 @@ void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float
 }
 
 
-void _Unitree_Receive(Unitree_Bridge_Type bridge,Unitree_Type unitree_1,Unitree_Type unitree_2) {
+void _Unitree_Receive(Unitree_Bridge_Type *bridge,Unitree_Type *unitree_1,Unitree_Type *unitree_2) {
 	uint16_t tmp,deviceid;
 
     // clear IDLE flag
-    tmp = bridge.USARTx->DR;
-    tmp = bridge.USARTx->SR;
+    tmp = bridge->USARTx->DR;
+    tmp = bridge->USARTx->SR;
 
 	DMA_Disable(USART6_Rx);
 
-	deviceid=bridge.receiveBuf[2]&0x0f;
+	deviceid=bridge->receiveBuf[2]&0x0f;
 	if(deviceid==0){
-		memcpy(unitree_1.receiveBuf,bridge.receiveBuf,Unitree_Protocol_Receive_Length);
-		unitree_1._Unitree_Unpack(&unitree_1);
+		memcpy(unitree_1->receiveBuf,bridge->receiveBuf,Unitree_Protocol_Receive_Length);
+		unitree_1->_Unitree_Unpack(unitree_1);
 	}
 	else{
-		memcpy(unitree_2.receiveBuf,bridge.receiveBuf,Unitree_Protocol_Receive_Length);
-		unitree_2._Unitree_Unpack(&unitree_2);
+		memcpy(unitree_2->receiveBuf,bridge->receiveBuf,Unitree_Protocol_Receive_Length);
+		unitree_2->_Unitree_Unpack(unitree_2);
 
 	}
 

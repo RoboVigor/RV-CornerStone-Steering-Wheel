@@ -65,7 +65,7 @@ typedef struct{
 	Unitree_Data_Type *Unitree_Data;
 	uint8_t receiveBuf[Unitree_Protocol_Receive_Length];
 	
-    void (*_Unitree_Init)(struct Unitree_Type *unitree,Unitree_Bridge_Type bridge,uint8_t id, uint8_t status,float k_spd, float k_pos);
+    void (*_Unitree_Init)(struct Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos);
 
     void (*_Unitree_Send)(struct Unitree_Type *unitree);
     void (*_Unitree_Set_K)(struct Unitree_Type *unitree, float k_spd, float k_pos);
@@ -75,14 +75,14 @@ typedef struct{
 
 } Unitree_Type;
 
-void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type bridge,uint8_t id, uint8_t status,float k_spd, float k_pos);
-void _Unitree_Bind(Unitree_Bridge_Type bridge,USART_TypeDef *USARTx);
+void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos);
+void _Unitree_Bind(Unitree_Bridge_Type *bridge,USART_TypeDef *USARTx);
 
 void _Unitree_Send(Unitree_Type *unitree) ;
 void _Unitree_Set_K( Unitree_Type *unitree, float k_spd, float k_pos);
 void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float angle);
 
-void _Unitree_Receive(Unitree_Bridge_Type bridge,Unitree_Type unitree_1,Unitree_Type unitree_2);
+void _Unitree_Receive(Unitree_Bridge_Type *bridge,Unitree_Type *unitree_1,Unitree_Type *unitree_2);
 void _Unitree_Unpack(Unitree_Type *unitree);
 
 #endif
