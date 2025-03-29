@@ -76,15 +76,15 @@ void Task_Can_Send(void *Parameters) {
 		//Encoder_Can_Send(CAN2,0x02,0x01,0x00);
 		//Encoder_Can_Send(CAN2,0x03,0x01,0x00);
 		//Encoder_Can_Send(CAN2,0x04,0x01,0x00);
-		
-		Motor_Joint2._Unitree_Send(&Motor_Joint2);
-		delay_ms(1);
+
 		Motor_Joint3._Unitree_Send(&Motor_Joint3);
+		delay_ms(1);
+		Motor_Joint2._Unitree_Send(&Motor_Joint2);
         //USART_SendData(USART6, 0x01);	
 
 		//DMA_Disable(USART6_Tx);
 		//DMA_Enable(USART6_Tx,17);';
-			
+
         vTaskDelayUntil(&LastWakeTime, intervalms); // 发送频率
     }
     vTaskDelete(NULL);
@@ -98,10 +98,18 @@ void Task_Arm(void *Parameters) {
 	
 	
     float armAngleTargetControl     = 0;
+	float jointAngleTargetControl=0;
     
-    PID_Init(&PID_ArmAngle, 60, 0, 0, 16000, 10);
-	PID_Init(&PID_Joint2_CM,3.0,0.003,6.0,100,3);
-	PID_Init(&PID_Joint3_CM,3.0,0.003,6.0,100,3);
+    PID_Init(&PID_Joint1_CM, 600, 0, 0, 16000, 10);
+	PID_Init(&PID_Joint2_CM,0.055,0.0001,0.1,100,3);
+	PID_Init(&PID_Joint3_CM,0.055,0.0001,0.1,100,3);
+	
+	Arm_Update(&ArmData,Motor_Joint1.angle,
+                        Motor_Joint2.angleCalibrated,
+                        Motor_Joint3.angleCalibrated,
+                        -Motor_Joint4.angle,
+                        Motor_Joint5.angle,
+                        Motor_Joint6.angle);
 	
 	while(1){
 		if(BumperEnabled){
@@ -113,14 +121,15 @@ void Task_Arm(void *Parameters) {
         //armAngleTargetControl += remoteData.ry / 660.0f * 360 * interval;
 		armAngleTargetControl=remoteData.ry /660.0f*6.33/4;
 		
-        PID_Calculate(&PID_ArmAngle, armAngleTargetControl, Motor_Arm.angle);
-       // PID_Calculate(&PID_Joint2_CM, 0, Motor_Joint2.angle_r);
-        PID_Calculate(&PID_Joint3_CM, armAngleTargetControl, Motor_Joint3.angle_r);
+		Arm_Calculate_Joint_Angle(&ArmData,ArmData.x,ArmData.y,ArmData.theta);
+		
+        PID_Calculate(&PID_Joint1_CM, jointAngleTargetControl, Motor_Joint1.angle);
+        PID_Calculate(&PID_Joint2_CM, 0, Motor_Joint2.angleCalibrated);
+        PID_Calculate(&PID_Joint3_CM, armAngleTargetControl, Motor_Joint3.angleCalibrated);
 
-        Motor_Arm.input=-PID_ArmAngle.output;
-		//Motor_Arm_1.=armAngleTargetControl/180*6.28/5;
-		Motor_Joint2.torque=PID_Joint2_CM.output;
-		Motor_Joint3.torque=PID_Joint3_CM.output;
+		//Motor_Joint1.input=PID_Joint1_CM.output;
+		//Motor_Joint2.torque=PID_Joint2_CM.output;
+		//Motor_Joint3.torque=PID_Joint3_CM.output;
 
         vTaskDelayUntil(&LastWakeTime, intervalms);
 		

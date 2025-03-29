@@ -43,8 +43,9 @@
 #define GYROSCOPE_LSB 16.384f                 // 陀螺仪敏感度 2^16/4000
 #define ACCELERATE_LSB 4096.0f                // 加速度计敏感度 2^16/16
 
-#define LINK1_LENGTH 0.0f
-#define LINK2_LENGTH 0.0f
+#define LINK1_LENGTH 280.0f
+#define LINK2_LENGTH 339.9f
+#define LINK3_LENGTH 188.6913f
 
 // DMA
 #define DMA_BUFFER_LENGTH 128 // DMA发送接收长度
