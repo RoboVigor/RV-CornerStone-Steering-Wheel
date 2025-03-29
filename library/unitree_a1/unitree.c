@@ -1,9 +1,10 @@
 #include "unitree.h"
 
-void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos) {
+void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos,uint8_t rvtstate) {
     unitree->_Unitree_Send=_Unitree_Send;
     unitree->_Unitree_Set_K=_Unitree_Set_K;
 	unitree->_Unitree_Set_Data=_Unitree_Set_Data;
+	unitree->_Unitree_Set_Angle_Bias=_Unitree_Set_Angle_Bias;
 	unitree->_Unitree_Unpack=_Unitree_Unpack;
 
     unitree->_Unitree_Set_K(unitree, k_spd, k_pos); 
@@ -17,6 +18,9 @@ void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, 
 	unitree->id=id;
 	
 	unitree->status=status;
+	
+	unitree->revertState=rvtstate;
+	unitree->angleBias=0;
 	
 }
 
@@ -59,6 +63,7 @@ void _Unitree_Send(Unitree_Type *unitree) {
     DMA_Disable(USART6_Tx);
     DMA_Enable(USART6_Tx, Unitree_Protocol_Send_Length);
 	
+	
 }
 
 void _Unitree_Set_K( Unitree_Type *unitree, float k_spd, float k_pos){
@@ -73,6 +78,11 @@ void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float
 	unitree->angle=angle;
 
 
+}
+
+
+void _Unitree_Set_Angle_Bias(Unitree_Type *unitree, float angle_bias){
+	unitree->angleBias=angle_bias;
 }
 
 
@@ -115,11 +125,14 @@ void _Unitree_Unpack(Unitree_Type *unitree) {
 		return;
 
 	t=unitree->receiveBuf[3]|unitree->receiveBuf[4]<<8;
-	unitree->torque_r=t/256;
+	unitree->torque_r=t/256.0f;
 	v=unitree->receiveBuf[5]|unitree->receiveBuf[6]<<8;
-	unitree->velocity_r=v/256*6.28;
+	unitree->velocity_r=v/256.0f*360.0f;
 	a=unitree->receiveBuf[7]|unitree->receiveBuf[8]<<8|unitree->receiveBuf[9]<<16|unitree->receiveBuf[10]<<24;
-	unitree->angle_r=a/32768.0*6.28/6.33;
+	unitree->angle_r=a/32768.0f*360.0f/6.33f;
+	if(unitree->revertState)
+		unitree->angle_r*=-1;
+	unitree->angleCalibrated=unitree->angle_r-unitree->angleBias;
 
 }
 

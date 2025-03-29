@@ -29,18 +29,11 @@ int main(void) {
     Motor_Init(&Motor_LF_Ori, 1, ENABLE, ENABLE);
     Motor_Init(&Motor_RF_Ori, 1, ENABLE, ENABLE);
     Motor_Init(&Motor_RB_Ori, 1, ENABLE, ENABLE);
-    
-
-    // 发射机构电机
-    Motor_Init(&Motor_Stir, STIR_MOTOR_REDUCTION_RATE, ENABLE, ENABLE); //拨弹
-    Motor_Init(&Motor_FL, 1, DISABLE, ENABLE);
-    Motor_Init(&Motor_FR, 1, DISABLE, ENABLE);
-
-    // 云台电机
-    Motor_Init(&Motor_Yaw, GIMBAL_MOTOR_REDUCTION_RATE, ENABLE, ENABLE);   // 顺时针为正电流
-    Motor_Init(&Motor_Pitch, GIMBAL_MOTOR_REDUCTION_RATE, ENABLE, ENABLE); // 顺时针为正电流
-
-    Motor_Init(&Motor_Arm, CHASSIS_MOTOR_REDUCTION_RATE, ENABLE,ENABLE);
+	
+    Motor_Init(&Motor_Joint1, 1, ENABLE, ENABLE);
+    Motor_Init(&Motor_Joint4, 2.4444, ENABLE, ENABLE);
+    Motor_Init(&Motor_Joint5, 1, ENABLE, ENABLE);
+    Motor_Init(&Motor_Joint6, 1, ENABLE, ENABLE);
 
     // 遥控器数据初始化
     DBUS_Init(&remoteData, &keyboardData, &mouseData);
@@ -68,7 +61,6 @@ int main(void) {
     BSP_UART7_Init(115200, USART_IT_IDLE);
     BSP_UART8_Init(115200, USART_IT_IDLE);
 
-
     // Servo
     BSP_PWM_Set_Port(&PWM_Magazine_Servo, PWM_PH10);
     BSP_PWM_Init(&PWM_Magazine_Servo, 9000, 200, TIM_OCPolarity_Low);
@@ -77,6 +69,12 @@ int main(void) {
 	Motor_Set_Angle_Bias(&Motor_LF_Ori,41.528);
 	Motor_Set_Angle_Bias(&Motor_RF_Ori,-102.657);
 	Motor_Set_Angle_Bias(&Motor_RB_Ori,102.744);
+	
+	
+	//Motor_Set_Angle_Bias(&Motor_Joint1,90.8125);
+	Motor_Set_Angle_Bias(&Motor_Joint4,55.0338);
+	//Motor_Set_Angle_Bias(&Motor_Joint5,102.744);
+	//Motor_Set_Angle_Bias(&Motor_Joint6,102.744);
 	
     // Calibration
     if (ROBOT_MIAO) {
@@ -102,8 +100,11 @@ int main(void) {
     Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x202, &Motor_LF);
     Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x204, &Motor_RF);
     Bridge_Bind(&BridgeData, CAN1_BRIDGE, 0x206, &Motor_RB);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x206, &Motor_Joint1);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x208, &Motor_Joint4);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x207, &Motor_Joint5);
+    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x201, &Motor_Joint6);
 	
-    Bridge_Bind(&BridgeData, CAN2_BRIDGE, 0x205, &Motor_Arm);
 
     // 总线设置
     Bridge_Bind(&BridgeData, USART_BRIDGE, 7, &Node_Host);
@@ -113,10 +114,22 @@ int main(void) {
     // 陀螺仪
     Gyroscope_Init(&Gyroscope_EulerData, 300); // 初始化
 	
-	_Unitree_Bind(Unitree_Bridge,USART6);
+	_Unitree_Bind(&Unitree_Bridge,USART6);
 	
-	Unitree_Init(&Motor_Joint2,Unitree_Bridge,0,1,0.0f,0.0f);
-	Unitree_Init(&Motor_Joint3,Unitree_Bridge,1,1,0.0f,0.0f);
+	Unitree_Init(&Motor_Joint2,&Unitree_Bridge,0,0,0.0f,0.0f,ENABLE);
+	Unitree_Init(&Motor_Joint3,&Unitree_Bridge,1,0,0.0f,0.0f,ENABLE);
+	
+	Motor_Joint2._Unitree_Set_Angle_Bias(&Motor_Joint2,-115.9658);
+	Motor_Joint3._Unitree_Set_Angle_Bias(&Motor_Joint3,94.2968);
+	
+	delay_ms(1);
+	Motor_Joint2._Unitree_Send(&Motor_Joint2);
+	delay_ms(2);
+	Motor_Joint3._Unitree_Send(&Motor_Joint3);
+	delay_ms(2);
+	
+	Motor_Joint2.status=1;
+	Motor_Joint3.status=1;
 	
 	//while(1);
 	

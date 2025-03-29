@@ -23,6 +23,7 @@
 #include "Driver_CAN.h"
 #include "Driver_Motor.h"
 #include "Driver_Chassis.h"
+#include "Driver_Arm.h"
 #include "mpu6500_driver.h"
 #include "unitree.h"
 #include "Driver_Gyroscope.h"
@@ -57,7 +58,7 @@ __HANDLE_EXT chassis_data_t HostChassisData;
 // 电机
 __HANDLE_EXT Motor_Type Motor_LF, Motor_RF, Motor_RB, Motor_LB, Motor_LAJI;
 __HANDLE_EXT Motor_Type Motor_LF_Ori, Motor_RF_Ori, Motor_RB_Ori, Motor_LB_Ori;
-__HANDLE_EXT Motor_Type Motor_Arm;
+__HANDLE_EXT Motor_Type Motor_Joint1,Motor_Joint4,Motor_Joint5,Motor_Joint6;
 __HANDLE_EXT Unitree_Type Motor_Joint2,Motor_Joint3;
 __HANDLE_EXT Unitree_Bridge_Type Unitree_Bridge;
 
@@ -81,9 +82,10 @@ __HANDLE_EXT DebugData_Type DebugData;
 
 // 底盘
 __HANDLE_EXT ChassisData_Type ChassisData;
+__HANDLE_EXT ArmData_Type ArmData;
 __HANDLE_EXT PID_Type         PID_LFCM, PID_LBCM, PID_RBCM, PID_RFCM, PID_YawAngle, PID_YawSpeed;
 __HANDLE_EXT PID_Type         PID_LFORI_CM, PID_LBORI_CM, PID_RBORI_CM, PID_RFORI_CM;
-__HANDLE_EXT PID_Type         PID_ArmAngle,PID_ArmSpeed,PID_Joint1_CM;
+__HANDLE_EXT PID_Type         PID_Joint1_CM,PID_Joint2_CM,PID_Joint3_CM;
 __HANDLE_EXT uint8_t          PigeonCurrent, PigeonVoltage, PigeonEnergy, PigeonChargeEnable;
 
 // 通讯协议
