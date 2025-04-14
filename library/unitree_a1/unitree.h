@@ -2,6 +2,7 @@
 #define __UNITREE_H
 
 #include "stm32f4xx.h"
+#include "Driver_CAN.h"
 #include "Driver_BSP.h"
 #include "vegmath.h"
 #include "macro.h"
@@ -32,21 +33,13 @@ typedef union{
 		
 		uint16_t crc16;
 	};
-#pragma pack(pop)
+#pragma pack(pop)       
 	uint8_t data[Unitree_Protocol_Send_Length];
 }Unitree_Data_Type;
 
+
 typedef struct{
 	USART_TypeDef *USARTx;
-
-	Unitree_Data_Type data_t;
-	uint8_t receiveBuf[Unitree_Protocol_Receive_Length];
-
-}Unitree_Bridge_Type;
-
-typedef struct{
-	uint8_t id;
-	uint8_t status;
 	
 	float torque;		//(N*m)
 	float velocity;		//(ras/s)
@@ -58,36 +51,31 @@ typedef struct{
 	float torque_r;
 	float velocity_r;
 	float angle_r;
-
-	float angleBias;
-	float angleCalibrated;
 	
-	uint8_t revertState;
-	
-	Unitree_Data_Type *Unitree_Data;
+	Unitree_Data_Type Unitree_Data;
 	uint8_t receiveBuf[Unitree_Protocol_Receive_Length];
 	
-    void (*_Unitree_Init)(struct Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos,uint8_t rvtstate);
+    void (*_Unitree_Init)(struct Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id,  uint8_t status,float k_spd, float k_pos);
+    void (*_Unitree_Bind)(struct Unitree_Type *unitree,USART_TypeDef *USARTx);
 
     void (*_Unitree_Send)(struct Unitree_Type *unitree);
     void (*_Unitree_Set_K)(struct Unitree_Type *unitree, float k_spd, float k_pos);
 	void (*_Unitree_Set_Data)(struct Unitree_Type *unitree, float torque, float velocity,float angle);
-	void (*_Unitree_Set_Angle_Bias)(struct Unitree_Type *unitree, float angle_bias);
 
+	void (*_Unitree_Receive)(struct Unitree_Type *unitree);
 	void (*_Unitree_Unpack)(struct Unitree_Type *unitree);
 
 } Unitree_Type;
 
-void Unitree_Init(Unitree_Type *unitree,Unitree_Bridge_Type *bridge,uint8_t id, uint8_t status,float k_spd, float k_pos,uint8_t rvtstate);
-void _Unitree_Bind(Unitree_Bridge_Type *bridge,USART_TypeDef *USARTx);
+void Unitree_Init(Unitree_Type *unitree, USART_TypeDef *USARTx,uint8_t id, uint8_t status, float k_spd, float k_pos);
+void _Unitree_Bind(Unitree_Type *unitree,USART_TypeDef *USARTx);
 
 void _Unitree_Send(Unitree_Type *unitree) ;
 void _Unitree_Set_K( Unitree_Type *unitree, float k_spd, float k_pos);
 void _Unitree_Set_Data(Unitree_Type *unitree, float torque, float velocity,float angle);
-void _Unitree_Set_Angle_Bias(Unitree_Type *unitree, float angle_bias);
 
-void _Unitree_Receive(Unitree_Bridge_Type *bridge,Unitree_Type *unitree_1,Unitree_Type *unitree_2);
+void _Unitree_Receive(Unitree_Type *unitree);
 void _Unitree_Unpack(Unitree_Type *unitree);
 
-
 #endif
+

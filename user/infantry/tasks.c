@@ -76,15 +76,13 @@ void Task_Can_Send(void *Parameters) {
 		//Encoder_Can_Send(CAN2,0x02,0x01,0x00);
 		//Encoder_Can_Send(CAN2,0x03,0x01,0x00);
 		//Encoder_Can_Send(CAN2,0x04,0x01,0x00);
-
-		Motor_Joint3._Unitree_Send(&Motor_Joint3);
-		delay_ms(1);
-		Motor_Joint2._Unitree_Send(&Motor_Joint2);
+		
+		Motor_Arm_1._Unitree_Send(&Motor_Arm_1);
         //USART_SendData(USART6, 0x01);	
 
 		//DMA_Disable(USART6_Tx);
-		//DMA_Enable(USART6_Tx,17);';
-
+		//DMA_Enable(USART6_Tx,17);
+			
         vTaskDelayUntil(&LastWakeTime, intervalms); // 发送频率
     }
     vTaskDelete(NULL);
@@ -98,18 +96,9 @@ void Task_Arm(void *Parameters) {
 	
 	
     float armAngleTargetControl     = 0;
-	float jointAngleTargetControl=0;
     
-    PID_Init(&PID_Joint1_CM, 600, 0, 0, 16000, 10);
-	PID_Init(&PID_Joint2_CM,0.055,0.0001,0.1,100,3);
-	PID_Init(&PID_Joint3_CM,0.055,0.0001,0.1,100,3);
-	
-	Arm_Update(&ArmData,Motor_Joint1.angle,
-                        Motor_Joint2.angleCalibrated,
-                        Motor_Joint3.angleCalibrated,
-                        -Motor_Joint4.angle,
-                        Motor_Joint5.angle,
-                        Motor_Joint6.angle);
+    PID_Init(&PID_ArmAngle, 60, 0, 0, 16000, 10);
+	PID_Init(&PID_Arm1_CM,3.0,0.003,6.0,100,3);
 	
 	while(1){
 		if(BumperEnabled){
@@ -121,18 +110,14 @@ void Task_Arm(void *Parameters) {
         //armAngleTargetControl += remoteData.ry / 660.0f * 360 * interval;
 		armAngleTargetControl=remoteData.ry /660.0f*6.33/4;
 		
-		Arm_Calculate_Joint_Angle(&ArmData,ArmData.x,ArmData.y,ArmData.theta);
-		
-        PID_Calculate(&PID_Joint1_CM, jointAngleTargetControl, Motor_Joint1.angle);
-        PID_Calculate(&PID_Joint2_CM, 0, Motor_Joint2.angleCalibrated);
-        PID_Calculate(&PID_Joint3_CM, armAngleTargetControl, Motor_Joint3.angleCalibrated);
+        PID_Calculate(&PID_ArmAngle, armAngleTargetControl, Motor_Arm.angle);
+        PID_Calculate(&PID_Arm1_CM, armAngleTargetControl, Motor_Arm_1.angle_r);
 
-		//Motor_Joint1.input=PID_Joint1_CM.output;
-		//Motor_Joint2.torque=PID_Joint2_CM.output;
-		//Motor_Joint3.torque=PID_Joint3_CM.output;
+        Motor_Arm.input=-PID_ArmAngle.output;
+		//Motor_Arm_1.=armAngleTargetControl/180*6.28/5;
+		Motor_Arm_1.torque=PID_Arm1_CM.output;
 
         vTaskDelayUntil(&LastWakeTime, intervalms);
-		
     }
 
     vTaskDelete(NULL);
@@ -177,10 +162,10 @@ void Task_Chassis(void *Parameters) {
     PID_Init(&PID_LBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RBCM, 20, 0, 0, 10000, 1200);
     PID_Init(&PID_RFCM, 20, 0, 0, 10000, 1200);
-    PID_Init(&PID_LFORI_CM, 300, 0, 500, 15000, 0);
-    PID_Init(&PID_LBORI_CM, 300, 0, 500, 15000, 0);
-    PID_Init(&PID_RBORI_CM, 300, 0, 500, 15000, 0);
-    PID_Init(&PID_RFORI_CM, 300, 0, 500, 15000, 0);
+    PID_Init(&PID_LFORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_LBORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_RBORI_CM, 200, 0, 1000, 5000, 0);
+    PID_Init(&PID_RFORI_CM, 200, 0, 1000, 5000, 0);
 
     // 初始化底盘
     Chassis_Init(&ChassisData);
@@ -314,7 +299,6 @@ void Task_Chassis(void *Parameters) {
         // 底盘跟随云台
         //vw = ABS(PID_Follow_Angle.error) < followDeadRegion ? 0 : (-1 * PID_Follow_Speed.output * DPS2RPS);
 		vw=remoteData.rx / 660.0f*90;
-		
 
         // Host control
         vx += HostChassisData.vx;
@@ -363,18 +347,15 @@ void Task_Chassis(void *Parameters) {
         PID_Calculate(&PID_LFCM, ChassisData.rotorSpeed[1], Motor_LF.speed * RPM2RPS);
         PID_Calculate(&PID_RFCM, ChassisData.rotorSpeed[2], Motor_RF.speed * RPM2RPS);
         PID_Calculate(&PID_RBCM, ChassisData.rotorSpeed[3], Motor_RB.speed * RPM2RPS);
-        PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[0], Motor_LB_Ori.angle);
-        PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[1], Motor_LF_Ori.angle);
-        PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[2], Motor_RF_Ori.angle);
-        PID_Calculate(&PID_RBORI_CM, ChassisData.rotorAngle[3], Motor_RB_Ori.angle);
+        PID_Calculate(&PID_LBORI_CM, ChassisData.rotorAngle[0], Encoder_LB.angle);
+        PID_Calculate(&PID_LFORI_CM, ChassisData.rotorAngle[1], Encoder_LF.angle);
+        PID_Calculate(&PID_RFORI_CM, ChassisData.rotorAngle[2], Encoder_RF.angle);
+        PID_Calculate(&PID_RBORI_CM, ChassisData.rotorAngle[3], Encoder_RB.angle);
 
         // 输出电流值到电调
         Motor_LF.input = PID_LFCM.output * ChassisData.powerScale;
         Motor_LB.input = PID_LBCM.output * ChassisData.powerScale;
-        //Motor_LF.input = 1000;
         //Motor_LB.input = 1000;
-//        Motor_RB.input = 1000;
-//        Motor_RF.input = 1000;
         Motor_RB.input     = PID_RBCM.output * ChassisData.powerScale;
         Motor_RF.input     = PID_RFCM.output * ChassisData.powerScale;
         
@@ -382,10 +363,7 @@ void Task_Chassis(void *Parameters) {
 		Motor_LF_Ori.input = PID_LFORI_CM.output;
 		Motor_RF_Ori.input = PID_RFORI_CM.output;
 		Motor_RB_Ori.input = PID_RBORI_CM.output;
-//		Motor_LB_Ori.input = 3000;
-//		Motor_LF_Ori.input = 3000;
-//		Motor_RF_Ori.input = 3000;
-//		Motor_RB_Ori.input = 3000;
+		//Motor_LB_Ori.input = 1000;
 
         // 调试信息
         // DebugData.debug1 = vx * 1000;

@@ -44,8 +44,8 @@
 #define ACCELERATE_LSB 4096.0f                // 加速度计敏感度 2^16/16
 
 #define LINK1_LENGTH 280.0f
-#define LINK2_LENGTH 339.9f
-#define LINK3_LENGTH 188.6913f
+#define LINK2_LENGTH 360.2517f
+#define LINK3_LENGTH 97.5f
 
 // DMA
 #define DMA_BUFFER_LENGTH 128 // DMA发送接收长度

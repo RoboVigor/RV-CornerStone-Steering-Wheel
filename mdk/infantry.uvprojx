@@ -560,11 +560,6 @@
               <FileType>1</FileType>
               <FilePath>..\driver\src\Driver_Encoder.c</FilePath>
             </File>
-            <File>
-              <FileName>Driver_Arm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\driver\src\Driver_Arm.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>

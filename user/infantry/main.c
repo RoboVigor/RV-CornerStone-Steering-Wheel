@@ -72,7 +72,7 @@ int main(void) {
 	
 	
 	//Motor_Set_Angle_Bias(&Motor_Joint1,90.8125);
-	Motor_Set_Angle_Bias(&Motor_Joint4,55.0338);
+	Motor_Set_Angle_Bias(&Motor_Joint4,64.0338);
 	//Motor_Set_Angle_Bias(&Motor_Joint5,102.744);
 	//Motor_Set_Angle_Bias(&Motor_Joint6,102.744);
 	
